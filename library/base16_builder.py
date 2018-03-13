@@ -329,7 +329,7 @@ class SchemeRepo(object):
         # to only yield a single requested scheme though.
         module_scheme_arg = self.module.params.get('scheme')
         if module_scheme_arg and not self.name in module_scheme_arg:
-            return []
+            return
 
         self.git_repo.clone_if_missing()
 
@@ -392,7 +392,7 @@ class TemplateRepo(object):
     def sources(self):
         module_template_arg = self.module.params.get('template')
         if module_template_arg and self.name != module_template_arg:
-            return []
+            return
 
         self.git_repo.clone_if_missing()
 
@@ -433,7 +433,7 @@ class Base16Builder(object):
         if PYSTACHE_ERR:
             self.module.fail_json(
                 msg='Failed to import pystache. Type `pip install pystache` - {}'.format(PYSTACHE_ERR),
-                **self.result,
+                **self.result
             )
 
         if self.module.params['update']:
