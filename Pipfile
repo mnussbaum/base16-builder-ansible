@@ -9,3 +9,6 @@ pystache = ">=0.5.4"
 
 [dev-packages]
 nose2 = "*"
+
+[requires]
+python_version = "3.5"

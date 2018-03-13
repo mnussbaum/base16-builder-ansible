@@ -1,4 +1,4 @@
-ansible-base16-builder
+ansible-base16-builder [![Build Status](https://travis-ci.org/mnussbaum/ansible-base16-builder.svg?branch=master)](https://travis-ci.org/mnussbaum/ansible-base16-builder)
 ================
 
 This module builds and returns [Base16](https://github.com/chriskempson/base16)
@@ -8,8 +8,9 @@ Gruvbox.
 
 ## Dependencies
 
-Besides Ansible itself, the module's only depedency is
-[pystache](https://github.com/defunkt/pystache). You can install it with:
+* Python 3.5 or greater
+* Ansible
+* [Pystache](https://github.com/defunkt/pystache), install with:
 
     $ pip install pystache
 
