@@ -1,0 +1,11 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+ansible = ">=2.4.3.0"
+pystache = ">=0.5.4"
+
+[dev-packages]
+nose2 = "*"
