@@ -2,8 +2,8 @@ ansible-base16-builder [![Build Status](https://travis-ci.org/mnussbaum/ansible-
 ================
 
 This module builds and returns [Base16](https://github.com/chriskempson/base16)
-color schemes. Base16 is a framework for generating themes for a wide variety
-of applications like Vim, Bash or i3 and color schemes like Tomorrow Night or
+themes. Base16 is a framework for generating themes for a wide variety of
+applications like Vim, Bash or i3 with color schemes like Tomorrow Night or
 Gruvbox.
 
 ## Dependencies
@@ -12,7 +12,9 @@ Gruvbox.
 * Ansible
 * [Pystache](https://github.com/defunkt/pystache), install with:
 
-    $ pip install pystache
+    ```
+    pip install pystache
+    ```
 
 ## Example usages
 
