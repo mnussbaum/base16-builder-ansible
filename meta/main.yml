@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: Michael Nussbaum (@mnussbaum)
+  description: >
+    Builds and updates Base16 color schemes and templates so that you can
+    install them into config files and render them into your own templates. The
+    module renders scheme templates on the fly so you can use new color schemes
+    that haven't yet been picked up and pre-rendered by the many Base16
+    template repos.
+  license: MIT
+  min_ansible_version: 2.0
+  galaxy_tags:
+    - base16
+    - colorscheme
+    - development
+    - dotfiles
+    - personalization
+
+dependencies: {}
