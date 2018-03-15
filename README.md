@@ -190,7 +190,5 @@ pipenv run nose2
 ## To do
 
 * Installation instructions
-  * Distribute as a ansible-galaxy role
-  * Use the ansible-galaxy travis integration
 * Parallelize git pulls
 * Make the tests use fixtures instead of actually cloning repos
