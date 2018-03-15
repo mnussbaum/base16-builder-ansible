@@ -21,6 +21,24 @@ class AnsibleExitJson(Exception):
     pass
 
 
+class AnsibleFailJson(Exception):
+    """Exception class to be raised by module.fail_json and caught by the test case"""
+    pass
+
+
+def exit_json(*args, **kwargs):
+    """function to patch over exit_json; package return data into an exception"""
+    if 'changed' not in kwargs:
+        kwargs['changed'] = False
+    raise AnsibleExitJson(kwargs)
+
+
+def fail_json(*args, **kwargs):
+    """function to patch over fail_json; package return data into an exception"""
+    kwargs['failed'] = True
+    raise AnsibleFailJson(kwargs)
+
+
 def exit_json(*args, **kwargs):
     """function to patch over exit_json; package return data into an exception"""
     if 'changed' not in kwargs:
@@ -35,9 +53,9 @@ def fail_json(*args, **kwargs):
 
 
 class TestBase16Builder(unittest.TestCase):
-    def delete_test_data_dir(self):
-        if os.path.exists(self.test_data_dir):
-            shutil.rmtree(self.test_data_dir)
+    def delete_test_cache_dir(self):
+        if os.path.exists(self.test_cache_dir):
+            shutil.rmtree(self.test_cache_dir)
 
     def setUp(self):
         self.mock_module_helper = patch.multiple(
@@ -47,17 +65,17 @@ class TestBase16Builder(unittest.TestCase):
         )
         self.mock_module_helper.start()
         self.module = base16_builder
-        self.test_data_dir = '/tmp/ansible-base16-builder-test'
-        self.delete_test_data_dir()
+        self.test_cache_dir = '/tmp/base16-builder-ansible-test'
+        self.delete_test_cache_dir()
 
     def tearDown(self):
-        self.delete_test_data_dir()
+        self.delete_test_cache_dir()
 
     def test_module_builds_a_given_scheme_and_template(self):
         set_module_args({
             'scheme': 'tomorrow-night',
             'template': 'i3',
-            'data_dir': self.test_data_dir,
+            'cache_dir': self.test_cache_dir,
         })
 
         with self.assertRaises(AnsibleExitJson) as result:
@@ -66,24 +84,34 @@ class TestBase16Builder(unittest.TestCase):
 
 
         with open(os.path.join(
-            self.test_data_dir,
+            self.test_cache_dir,
+            'base16-builder-ansible',
             'templates',
             'i3',
             'bar-colors/base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night_bar_colors = f.read()
         with open(os.path.join(
-            self.test_data_dir, 'templates', 'i3',
+            self.test_cache_dir,
+            'base16-builder-ansible',
+            'templates',
+            'i3',
             'client-properties/base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night_client_properties = f.read()
         with open(os.path.join(
-            self.test_data_dir, 'templates', 'i3',
+            self.test_cache_dir,
+            'base16-builder-ansible',
+            'templates',
+            'i3',
             'colors/base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night_colors = f.read()
         with open(os.path.join(
-            self.test_data_dir, 'templates', 'i3',
+            self.test_cache_dir,
+            'base16-builder-ansible',
+            'templates',
+            'i3',
             'themes/base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night = f.read()
@@ -109,7 +137,7 @@ class TestBase16Builder(unittest.TestCase):
         self.assertEqual(result_args['schemes'], {})
 
     def test_module_builds_everything_if_no_scheme_or_template_is_passed(self):
-        set_module_args({'data_dir': self.test_data_dir})
+        set_module_args({'cache_dir': self.test_cache_dir})
 
         with self.assertRaises(AnsibleExitJson) as result:
             base16_builder.main()
@@ -122,7 +150,7 @@ class TestBase16Builder(unittest.TestCase):
         set_module_args({
             'update': True,
             'build': False,
-            'data_dir': self.test_data_dir,
+            'cache_dir': self.test_cache_dir,
         })
 
         with self.assertRaises(AnsibleExitJson) as result:
@@ -137,7 +165,7 @@ class TestBase16Builder(unittest.TestCase):
             'update': True,
             'scheme': 'tomorrow-night',
             'template': 'i3',
-            'data_dir': self.test_data_dir
+            'cache_dir': self.test_cache_dir
         })
 
         with self.assertRaises(AnsibleExitJson) as result:
@@ -161,7 +189,7 @@ class TestBase16Builder(unittest.TestCase):
             'template': 'i3',
             'schemes_source': 'https://github.com/mnussbaum/base16-schemes-source',
             'templates_source': 'https://github.com/mnussbaum/base16-templates-source',
-            'data_dir': self.test_data_dir,
+            'cache_dir': self.test_cache_dir,
         })
 
         with self.assertRaises(AnsibleExitJson) as result:
@@ -170,12 +198,22 @@ class TestBase16Builder(unittest.TestCase):
 
         self.assertEqual(result_args['changed'], True)
 
-        schemes_source = os.path.join(self.test_data_dir, 'sources', 'schemes')
+        schemes_source = os.path.join(
+            self.test_cache_dir,
+            'base16-builder-ansible',
+            'sources',
+            'schemes',
+        )
         self.assertTrue(os.path.exists(schemes_source))
         with open(os.path.join(schemes_source, '.git', 'config')) as git_config:
             self.assertTrue('mnussbaum/base16-schemes-source' in git_config.read())
 
-        templates_source = os.path.join(self.test_data_dir, 'sources', 'templates')
+        templates_source = os.path.join(
+            self.test_cache_dir,
+            'base16-builder-ansible',
+            'sources',
+            'templates',
+        )
         self.assertTrue(os.path.exists(templates_source))
         with open(os.path.join(templates_source, '.git', 'config')) as git_config:
             self.assertTrue('mnussbaum/base16-templates-source' in git_config.read())
