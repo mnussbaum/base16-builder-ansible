@@ -175,8 +175,16 @@ pipenv install
 pipenv run nose2
 ```
 
+## License
+
+[MIT](LICENSE)
+
 ## To do
 
-* Perf test to decide for/against in memory object retention
-* Cache output to local files for reuse?
+* Installation instructions
+  * distribute as a ansible-galaxy role
+  * use their travis integration
+  * add metadata back
+  * Add min. ansible version
+* Parallelize git pulls
 * Make the tests use fixtures instead of actually cloning repos
