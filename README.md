@@ -18,16 +18,6 @@ install and update color schemes with error handling and idempotency, or
 to embed the setup of Base16 color schemes into standard host provisioning
 steps.
 
-## Dependencies
-
-* Python 2.7, or 3.4 or greater
-* Ansible
-* [Pystache](https://github.com/defunkt/pystache), which you can install with:
-
-    ```
-    pip install pystache
-    ```
-
 ## Example usages
 
 ```yaml
@@ -172,6 +162,16 @@ build:
   default: yes
 ```
 
+## Dependencies
+
+* Python 2.7, or 3.4 or greater
+* Ansible
+* [Pystache](https://github.com/defunkt/pystache), which you can install with:
+
+    ```
+    pip install pystache
+    ```
+
 ## Developing
 
 This project uses [Pipenv](https://github.com/pypa/pipenv) to install
@@ -190,9 +190,7 @@ pipenv run nose2
 ## To do
 
 * Installation instructions
-  * distribute as a ansible-galaxy role
-  * use their travis integration
-  * add metadata back
-  * Add min. ansible version
+  * Distribute as a ansible-galaxy role
+  * Use the ansible-galaxy travis integration
 * Parallelize git pulls
 * Make the tests use fixtures instead of actually cloning repos
