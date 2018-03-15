@@ -10,3 +10,6 @@ install:
   - pipenv install --dev
 
 script: pipenv run nose2
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications
