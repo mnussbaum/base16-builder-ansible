@@ -41,12 +41,12 @@ options:
         required: false
         type: string
         default: Build all templates
-    data_dir:
+    cache_dir:
         description:
             - Directory to store cloned scheme and template source data
         required: false
         type: string
-        default: TODO
+        default: First available of $XDG_CACHE_DIR, $HOME/.cache, or platform derived temp dir
     schemes_source:
         description:
             - Git repo URL to clone for scheme source data
@@ -125,6 +125,7 @@ schemes:
 
 import os 
 import shutil
+import tempfile
 import yaml
 
 from ansible.module_utils.basic import AnsibleModule
@@ -215,7 +216,8 @@ class Base16SourceRepo(object):
             builder,
             self.module.params['{}_source'.format(self.source_type)],
             os.path.join(
-                self.module.params['data_dir'],
+                self.module.params['cache_dir'],
+                'base16-builder-ansible',
                 'sources',
                 self.source_type,
             ),
@@ -232,7 +234,8 @@ class Base16SourceRepo(object):
                 source_family,
                 source_url,
                 os.path.join(
-                    self.module.params['data_dir'],
+                    self.module.params['cache_dir'],
+                    'base16-builder-ansible',
                     self.source_type,
                     source_family,
                 ),
@@ -245,7 +248,6 @@ class Base16SourceRepo(object):
                 yield source
 
     def update(self):
-        # TODO: delete everything first
         self.git_repo.clone_or_pull()
         for source_repo in self._source_repos():
             source_repo.clone_or_pull() 
@@ -464,14 +466,21 @@ class Base16Builder(object):
         self.module.exit_json(**self.result)
 
 
-def run_module():
+def main():
+    if 'XDG_CACHE_DIR' in os.environ.keys():
+        default_cache_dir = os.environ['XDG_CACHE_DIR']
+    elif os.path.exists(os.path.join(os.path.expanduser('~'), '.cache')):
+        default_cache_dir = os.path.join(os.path.expanduser('~'), '.cache')
+    else:
+        default_cache_dir = tempfile.gettempdir()
+
     module = AnsibleModule(
         argument_spec=dict(
             update=dict(type='bool', required=False, default=False),
             build=dict(type='bool', required=False, default=True),
             scheme=dict(type='str', required=False),
             template=dict(type='str', required=False),
-            data_dir=dict(type='str', required=False, default='/tmp/base16'), # TODO use better data dir
+            cache_dir=dict(type='str', required=False, default=default_cache_dir),
             schemes_source=dict(type='str', required=False, default='https://github.com/chriskempson/base16-schemes-source'),
             templates_source=dict(type='str', required=False, default='https://github.com/chriskempson/base16-templates-source'),
         ),
@@ -479,10 +488,6 @@ def run_module():
     )
 
     return Base16Builder(module).run()
-
-
-def main():
-    run_module()
 
 
 if __name__ == '__main__':
