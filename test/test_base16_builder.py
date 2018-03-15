@@ -126,6 +126,20 @@ class TestBase16Builder(unittest.TestCase):
             }}}
         )
 
+    def test_module_builds_all_schemes_in_a_family_if_family_name_is_passed(self):
+        set_module_args({
+            'scheme': 'tomorrow',
+            'template': 'i3',
+            'cache_dir': self.test_cache_dir,
+        })
+
+        with self.assertRaises(AnsibleExitJson) as result:
+            base16_builder.main()
+        result_args = result.exception.args[0]
+
+        self.assertIn('tomorrow-night', result_args['schemes'])
+        self.assertIn('tomorrow', result_args['schemes'])
+
     def test_module_builds_nothing_if_build_false_is_passed(self):
         set_module_args({'build': False})
 

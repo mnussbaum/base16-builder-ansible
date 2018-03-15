@@ -339,7 +339,7 @@ class SchemeRepo(object):
             if os.path.splitext(path)[1] in ['.yaml', '.yml']:
                 # Cache schemes here?
                 scheme = Scheme(self.builder, os.path.join(self.git_repo.path, path))
-                if module_scheme_arg and module_scheme_arg != scheme.slug():
+                if module_scheme_arg and module_scheme_arg not in scheme.slug():
                     continue
 
                 yield scheme
