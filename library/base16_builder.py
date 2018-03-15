@@ -22,21 +22,23 @@ author:
 options:
     scheme:
         description:
-            - Set this to the name of a color scheme to only build that one scheme, and not all
+            - Set this to the name of a color scheme to only build that one scheme, instead of building all, which is the default
             - Only building a single scheme is much faster then building all
         required: false
         type: string
         default: Build all schemes
     template:
         description:
-            - Set this to the name of a template to only build that one template, and not all
+            - Set this to the name of a template to only build that one template instead of building all, which is the default
             - Only building a single template is much faster then building all
         required: false
         type: string
         default: Build all templates
     cache_dir:
         description:
-            - Directory to store cloned scheme, template and source data
+            - Parent directory to store cloned scheme, template and source data
+            - Will be created if it doesn't exist already
+            - The default looks for the $XDG_CACHE_DIR env var, then a ~/.cache dir, and falls back to the platform's temp dir if the first two don't exist
         required: false
         type: string
         default: First available of $XDG_CACHE_DIR, $HOME/.cache, or platform derived temp dir
@@ -64,8 +66,8 @@ options:
         default: no
     build:
         description:
-            - Set to no to disable building of any color schemes or templates
-            - Useful to set to no when used with update to only download sources
+            - Set to "no" to disable building of any color schemes or templates
+            - Useful to set to "no" when used with update to only download sources
         required: false
         type: bool
         default: yes
@@ -79,7 +81,7 @@ EXAMPLES = '''
   register: base16_schemes
 
 # It helps to print out the registered result once with debug to figure out how
-# to access any particular scheme and template. Each base16 template repo (e.g.
+# to access any particular scheme and template. Each Base16 template repo (e.g.
 # "shell", "i3") can include multiple template files to render out, so every
 # template repo will register their output at a slightly different index path in
 # the result object.
@@ -109,7 +111,7 @@ EXAMPLES = '''
     content: "{{ base16_schemes['tomorrow-night']['shell']['scripts']['base16-tomorrow-night.config'] }}"
     dest: /my/bash/profile/dir/tomorrow-night-shell.sh
 
-# Build every template for the a single color scheme
+# Build every template for a single color scheme
 - base16_builder:
     scheme: tomorrow-night
   register: base16_schemes
@@ -137,9 +139,9 @@ EXAMPLES = '''
 
 # If you make your own Base16 color scheme and want to reference it before it's
 # pulled into the master list of schemes you can fork the master list, add a
-# reference to your scheme, and then use your list fork as the schemes source.
-# The same applies to new template repos and the master template list. Those
-# master lists are available at:
+# reference to your scheme, and then use your list fork as the schemes source
+# arg here.  The same applies to new template repos and the master template
+# list. Those master lists are available at:
 #
 #   https://github.com/chriskempson/base16-schemes-source
 #   https://github.com/chriskempson/base16-templates-source
