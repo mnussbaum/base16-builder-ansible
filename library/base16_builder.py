@@ -505,9 +505,9 @@ class Base16Builder(object):
             self.module.exit_json(**self.result)
 
         for scheme in self.schemes_repo.sources():
-            # Not sure if this should be the slug or the family
             scheme_result = {}
             self.result['schemes'][scheme.slug()] = scheme_result
+
             for template in self.templates_repo.sources():
                 build_result = template.build(scheme)
                 if not scheme_result.get(template.family):
@@ -520,6 +520,32 @@ class Base16Builder(object):
 
                 template_result = template_family_result[build_result['output_dir']]
                 template_result[build_result['output_file_name']] = build_result['output']
+
+            if not scheme_result:
+                failure_msg = 'Failed to build any templates.'
+                if self.module.params['template']:
+                    failure_msg = '{} Template name "{}" was passed, but didn\'t match any known templates'.format(
+                        failure_msg,
+                        self.module.params['template'],
+                    )
+
+                self.module.fail_json(
+                    msg=failure_msg,
+                    **self.result
+                )
+
+        if not self.result['schemes']:
+            failure_msg = 'Failed to build any schemes.'
+            if self.module.params['scheme']:
+                failure_msg = '{} Scheme name "{}" was passed, but didn\'t match any known schemes'.format(
+                    failure_msg,
+                    self.module.params['scheme'],
+                )
+
+            self.module.fail_json(
+                msg=failure_msg,
+                **self.result
+            )
 
         self.module.exit_json(**self.result)
 

@@ -231,3 +231,31 @@ class TestBase16Builder(unittest.TestCase):
         self.assertTrue(os.path.exists(templates_source))
         with open(os.path.join(templates_source, '.git', 'config')) as git_config:
             self.assertTrue('mnussbaum/base16-templates-source' in git_config.read())
+
+    def test_module_fails_when_no_schemes_are_found_and_a_scheme_is_passed(self):
+        set_module_args({
+            'scheme': 'not-a-real-scheme',
+            'cache_dir': self.test_cache_dir,
+        })
+
+        with self.assertRaises(AnsibleFailJson) as result:
+            self.module.main()
+
+        self.assertEqual(
+            result.exception.args[0]['msg'],
+            'Failed to build any schemes. Scheme name "not-a-real-scheme" was passed, but didn\'t match any known schemes',
+        )
+
+    def test_module_fails_when_no_templates_are_found_and_a_template_is_passed(self):
+        set_module_args({
+            'template': 'not-a-real-template',
+            'cache_dir': self.test_cache_dir,
+        })
+
+        with self.assertRaises(AnsibleFailJson) as result:
+            self.module.main()
+
+        self.assertEqual(
+            result.exception.args[0]['msg'],
+            'Failed to build any templates. Template name "not-a-real-template" was passed, but didn\'t match any known templates',
+        )
