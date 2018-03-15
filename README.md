@@ -1,103 +1,107 @@
 base16-builder-ansible [![Build Status](https://travis-ci.org/mnussbaum/base16-builder-ansible.svg?branch=master)](https://travis-ci.org/mnussbaum/base16-builder-ansible)
 ================
 
-This module builds and returns [Base16](https://github.com/chriskempson/base16)
+This role builds and returns [Base16](https://github.com/chriskempson/base16)
 themes. Base16 is a framework for generating themes for a wide variety of
 applications like Vim, Bash or i3 with color schemes like Tomorrow Night or
 Gruvbox.
 
-The module's goal is to make it easy to install and update Base16 colors across
-a wide range of applications. Instead of downloading pre-rendered color scheme
-templates, this module builds them on the fly. This enables us to use Base16
+The role's goal is to make it easy to install and update Base16 colors across a
+wide range of applications. Instead of downloading pre-rendered color scheme
+templates, this role builds them on the fly. This enables us to use Base16
 color schemes that older template repos might not have picked up yet, as well
 as ensuring that we're always using the latest version of existing color
 schemes.
 
 Using Ansible as a Base16 builder allows us to write focused playbooks to
-install and update color schemes with error handling and idempotency, or
-to embed the setup of Base16 color schemes into standard host provisioning
-steps.
+install and update color schemes with error handling and idempotency, or to
+embed the setup of Base16 color schemes into standard host provisioning steps.
 
 ## Example usages
 
 ```yaml
-# Build a single color scheme and template and assign it to a variable
-- base16_builder:
-    scheme: tomorrow-night
-    template: shell
-  register: base16_schemes
+---
+roles:
+  - mnussbaum.base16-builder-ansible
 
-# It helps to print out the registered result once with debug to figure out how
-# to access any particular scheme and template. Each Base16 template repo (e.g.
-# "shell", "i3") can include multiple template files to render out, so every
-# template repo will register their output at a slightly different index path in
-# the result object.
+tasks:
+  # Build a single color scheme and template and assign it to a variable
+  - base16_builder:
+      scheme: tomorrow-night
+      template: shell
+    register: base16_schemes
 
-- debug:
-    var: base16_schemes
+  # It helps to print out the registered result once with debug to figure out how
+  # to access any particular scheme and template. Each Base16 template repo (e.g.
+  # "shell", "i3") can include multiple template files to render out, so every
+  # template repo will register their output at a slightly different index path in
+  # the result object.
 
-# I'll elide the rendered contents for readability, but result will look like this:
-#
-# "base16_schemes": {
-#   "changed": true,
-#   "failed": false,
-#   "schemes": {
-#     "tomorrow-night": {
-#       "shell": {
-#         "scripts": {
-#           "base16-tomorrow-night.sh": "#!/bin/sh\n# base16-shell ..."
-#         }
-#       }
-#     }
-#   }
-# }
+  - debug:
+      var: base16_schemes
 
-# You can write the generated color schemes to a file or render them into your
-# own templates
-- copy:
-    content: "{{ base16_schemes['tomorrow-night']['shell']['scripts']['base16-tomorrow-night.config'] }}"
-    dest: /my/bash/profile/dir/tomorrow-night-shell.sh
+  # I'll elide the rendered contents for readability, but result will look like this:
+  #
+  # "base16_schemes": {
+  #   "changed": true,
+  #   "failed": false,
+  #   "schemes": {
+  #     "tomorrow-night": {
+  #       "shell": {
+  #         "scripts": {
+  #           "base16-tomorrow-night.sh": "#!/bin/sh\n# base16-shell ..."
+  #         }
+  #       }
+  #     }
+  #   }
+  # }
 
-# Build every template for a single color scheme
-- base16_builder:
-    scheme: tomorrow-night
-  register: base16_schemes
+  # You can write the generated color schemes to a file or render them into your
+  # own templates
+  - copy:
+      content: "{{ base16_schemes['tomorrow-night']['shell']['scripts']['base16-tomorrow-night.config'] }}"
+      dest: /my/bash/profile/dir/tomorrow-night-shell.sh
 
-# Build every color scheme for a single template
-- base16_builder:
-    template: shell
-  register: base16_schemes
+  # Build every template for a single color scheme
+  - base16_builder:
+      scheme: tomorrow-night
+    register: base16_schemes
 
-# Build every color scheme for every template
-- base16_builder: {}
-  register: base16_schemes
+  # Build every color scheme for a single template
+  - base16_builder:
+      template: shell
+    register: base16_schemes
 
-# Download latest color scheme and template source files, but don't build anything
-- base16_builder:
-    update: yes
-    build: no
+  # Build every color scheme for every template
+  - base16_builder: {}
+    register: base16_schemes
 
-# Download updates for and rebuild a single template and scheme
-- base16_builder:
-    update: yes
-    scheme: tomorrow-night
-    template: shell
-  register: base16_schemes
+  # Download latest color scheme and template source files, but don't build anything
+  - base16_builder:
+      update: yes
+      build: no
 
-# If you make your own Base16 color scheme and want to reference it before it's
-# pulled into the master list of schemes you can fork the master list, add a
-# reference to your scheme, and then use your list fork as the schemes source
-# arg here.  The same applies to new template repos and the master template
-# list. Those master lists are available at:
-#
-#   https://github.com/chriskempson/base16-schemes-source
-#   https://github.com/chriskempson/base16-templates-source
-#
-- base16_builder:
-    scheme: my-brand-new-color-scheme
-    template: shell
-    schemes_source: http://github.com/my-user/my-schemes-source-fork
-    templates_source: http://github.com/my-user/my-templates-source-fork
+  # Download updates for and rebuild a single template and scheme
+  - base16_builder:
+      update: yes
+      scheme: tomorrow-night
+      template: shell
+    register: base16_schemes
+
+  # If you make your own Base16 color scheme and want to reference it before it's
+  # pulled into the master list of schemes you can fork the master list, add a
+  # reference to your scheme, and then use your list fork as the schemes source
+  # arg here.  The same applies to new template repos and the master template
+  # list. Those master lists are available at:
+  #
+  #   https://github.com/chriskempson/base16-schemes-source
+  #   https://github.com/chriskempson/base16-templates-source
+  #
+  - base16_builder:
+      scheme: my-brand-new-color-scheme
+      template: shell
+      schemes_source: http://github.com/my-user/my-schemes-source-fork
+      templates_source: http://github.com/my-user/my-templates-source-fork
 ```
 
 ## Options
@@ -172,6 +176,34 @@ build:
     pip install pystache
     ```
 
+## Installation
+
+You can install this role with
+[`ansible-galaxy`](https://galaxy.ansible.com/intro). Check out the
+`ansible-galaxy` docs for all the different ways you can install roles, but the
+simplest is just:
+
+    $ ansible-galaxy install mnussbaum.base16-builder-ansible
+
+After you've installed the role you need to reference it, and then you can use
+the `base16_builder` module it provides. Here's a very short example of this:
+
+```yaml
+---
+roles:
+  - mnussbaum.base16-builder-ansible
+
+tasks:
+  - base16_builder:
+      scheme: tomorrow-night
+      template: shell
+    register: base16_schemes
+```
+
+If you don't want to, or can't, use `ansible-galaxy`, then you can clone this
+repo and drop it directly into your [Ansible roles
+path](https://docs.ansible.com/ansible/latest/playbooks_reuse_roles.html#role-search-path).
+
 ## Developing
 
 This project uses [Pipenv](https://github.com/pypa/pipenv) to install
@@ -189,6 +221,5 @@ pipenv run nose2
 
 ## To do
 
-* Installation instructions
 * Parallelize git pulls
 * Make the tests use fixtures instead of actually cloning repos

@@ -24,3 +24,5 @@ galaxy_info:
     - personalization
 
 dependencies: {}
+
+# vim:ft=ansible:
