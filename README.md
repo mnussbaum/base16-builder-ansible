@@ -204,6 +204,9 @@ If you don't want to, or can't, use `ansible-galaxy`, then you can clone this
 repo and drop it directly into your [Ansible roles
 path](https://docs.ansible.com/ansible/latest/playbooks_reuse_roles.html#role-search-path).
 
+Either way you install the role, don't forget to also install the Pystache
+dependency as mentioned above.
+
 ## Developing
 
 This project uses [Pipenv](https://github.com/pypa/pipenv) to install
