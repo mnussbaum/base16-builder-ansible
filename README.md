@@ -6,16 +6,18 @@ themes. Base16 is a framework for generating themes for a wide variety of
 applications like Vim, Bash or i3 with color schemes like Tomorrow Night or
 Gruvbox.
 
-The role's goal is to make it easy to install and update Base16 colors across a
-wide range of applications. Instead of downloading pre-rendered color scheme
-templates, this role builds them on the fly. This enables us to use Base16
-color schemes that older template repos might not have picked up yet, as well
-as ensuring that we're always using the latest version of existing color
-schemes.
+This builder's goal is to make it easy to install and update Base16 colors
+across a wide range of applications. Using Ansible as a Base16 builder gives us
+a lot of flexibility. We can generate themes and either write them as
+standalone files or embed the theme into larger config file templates. This is
+particularly useful for applications that can only handle a single config file,
+like i3.
 
-Using Ansible as a Base16 builder allows us to write focused playbooks to
-install and update color schemes with error handling and idempotency, or to
-embed the setup of Base16 color schemes into standard host provisioning steps.
+Instead of downloading pre-rendered color scheme templates, this role builds
+them on the fly. This lets us use Base16 color schemes that older template
+repos might not have picked up yet, as well as ensuring that we're always using
+the latest version of existing color schemes.
+
 
 ## Example usages
 
