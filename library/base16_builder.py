@@ -140,7 +140,7 @@ EXAMPLES = '''
 # If you make your own Base16 color scheme and want to reference it before it's
 # pulled into the master list of schemes you can fork the master list, add a
 # reference to your scheme, and then use your list fork as the schemes source
-# arg here.  The same applies to new template repos and the master template
+# arg here. The same applies to new template repos and the master template
 # list. Those master lists are available at:
 #
 #   https://github.com/chriskempson/base16-schemes-source
@@ -386,7 +386,7 @@ class SchemeRepo(object):
 
     def sources(self):
         # Only clone and yield scheme repos that could contain the requested
-        # scheme.  We still need to do an exact comparison with the scheme slug
+        # scheme. We still need to do an exact comparison with the scheme slug
         # to only yield a single requested scheme though.
         module_scheme_arg = self.module.params.get('scheme')
         if module_scheme_arg and not self.name in module_scheme_arg:
