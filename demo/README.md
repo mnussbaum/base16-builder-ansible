@@ -16,3 +16,7 @@ If you want to run the demo yourself, kick it off with:
 The playbook expects you have `ansible-base16-builder`'s dependencies
 installed, so you'll need `pystache` and Ansible. See the main project README
 for more details.
+
+Keep in mind the shell file needs to be sourced by your ZSH profile, the Vim
+profile needs to be sourced by your `~/.vimrc` or Neovim configs, and the i3
+config will overwrite anything you have at that path when you run the playbook.
