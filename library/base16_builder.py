@@ -17,60 +17,60 @@ short_description: Builds Base16 color schemes and templates
 description: Builds and updates Base16 color schemes and templates so that you can install them into config files and render them into your own templates. The module renders scheme templates on the fly so you can use new color schemes that haven't yet been picked up and pre-rendered by the many Base16 template repos.
 
 author:
-    - Michael Nussbaum (@mnussbaum)
+  - Michael Nussbaum (@mnussbaum)
 
 options:
-    scheme:
-        description:
-            - Set this to the name of a color scheme to only build that one scheme, instead of building all, which is the default
-            - Only building a single scheme is much faster then building all
-        required: false
-        type: string
-        default: Build all schemes
-    template:
-        description:
-            - Set this to the name of a template to only build that one template instead of building all, which is the default
-            - Only building a single template is much faster then building all
-        required: false
-        type: string
-        default: Build all templates
-    cache_dir:
-        description:
-            - Parent directory to store cloned scheme, template and source data
-            - Will be created if it doesn't exist already
-            - The default looks for the $XDG_CACHE_DIR env var, then a ~/.cache dir, and falls back to the platform's temp dir if the first two don't exist
-        required: false
-        type: string
-        default: First available of $XDG_CACHE_DIR, $HOME/.cache, or platform derived temp dir
-    schemes_source:
-        description:
-            - Git repo URL to clone for scheme source data
-            - These repos include a list.yaml file that maps scheme names to Git source repos
-        required: false
-        type: string
-        default: https://github.com/chriskempson/base16-schemes-source
-    templates_source:
-        description:
-            - Git repo URL to clone for template source data
-            - These repos include a list.yaml file that maps template names to Git source repos
-        required: false
-        type: string
-        default: https://github.com/chriskempson/base16-templates-source
-    update:
-        description:
-            - Clone or pull color scheme and template sources
-            - By default will update all schemes and templates, but will repect scheme and template args
-            - Build will donwload any missing data, so you never _need_ to call update
-        required: false
-        type: bool
-        default: no
-    build:
-        description:
-            - Set to "no" to disable building of any color schemes or templates
-            - Useful to set to "no" when used with update to only download sources
-        required: false
-        type: bool
-        default: yes
+  scheme:
+    description:
+      - Set this to the name of a color scheme to only build that one scheme, instead of building all, which is the default
+      - Only building a single scheme is much faster then building all
+    required: false
+    type: string
+    default: Build all schemes
+  template:
+    description:
+      - Set this to the name of a template to only build that one template instead of building all, which is the default
+      - Only building a single template is much faster then building all
+    required: false
+    type: string
+    default: Build all templates
+  cache_dir:
+    description:
+      - Parent directory to store cloned scheme, template and source data
+      - Will be created if it doesn't exist already
+      - The default looks for the $XDG_CACHE_DIR env var, then a ~/.cache dir, and falls back to the platform's temp dir if the first two don't exist
+    required: false
+    type: string
+    default: First available of $XDG_CACHE_DIR, $HOME/.cache, or platform derived temp dir
+  schemes_source:
+    description:
+      - Git repo URL to clone for scheme source data
+      - These repos include a list.yaml file that maps scheme names to Git source repos
+    required: false
+    type: string
+    default: https://github.com/chriskempson/base16-schemes-source
+  templates_source:
+    description:
+      - Git repo URL to clone for template source data
+      - These repos include a list.yaml file that maps template names to Git source repos
+    required: false
+    type: string
+    default: https://github.com/chriskempson/base16-templates-source
+  update:
+    description:
+      - Clone or pull color scheme and template sources
+      - By default will update all schemes and templates, but will repect scheme and template args
+      - Build will donwload any missing data, so you never _need_ to call update
+    required: false
+    type: bool
+    default: no
+  build:
+    description:
+      - Set to "no" to disable building of any color schemes or templates
+      - Useful to set to "no" when used with update to only download sources
+    required: false
+    type: bool
+    default: yes
 '''
 
 EXAMPLES = '''
@@ -108,7 +108,7 @@ EXAMPLES = '''
 # You can write the generated color schemes to a file or render them into your
 # own templates
 - copy:
-    content: "{{ base16_schemes['tomorrow-night']['shell']['scripts']['base16-tomorrow-night.config'] }}"
+    content: "{{ base16_schemes['tomorrow-night']['shell']['scripts']['base16-tomorrow-night.sh'] }}"
     dest: /my/bash/profile/dir/tomorrow-night-shell.sh
 
 # Build every template for a single color scheme
@@ -155,31 +155,31 @@ EXAMPLES = '''
 
 RETURN = '''
 schemes:
-    description: A dict of color schemes mapped to nested dicts of rendered templates
-    type: dict
-    sample:
-     schemes:
-       tomorrow-night:
-         shell:
-           scripts:
-             base16-tomorrow-night.sh: "#!/bin/sh\n# base16-shell ..."
-         vim:
-           colors:
-             base16-tomorrow-night.colors: "\" vi:syntax=vim\n\n\" base16-vim ..."
-       gruvbox-light-soft:
-         shell:
-           scripts:
-             base16-gruvbox-light-soft.sh: "#!/bin/sh\n# base16-shell ..."
-         vim:
-           colors:
-             base16-gruvbox-light-soft.colors: "\" vi:syntax=vim\n\n\" base16-vim ..."
-       gruvbox-dark-medium:
-         shell:
-           scripts:
-             base16-gruvbox-dark-medium.sh: "#!/bin/sh\n# base16-shell ..."
-         vim:
-           colors:
-             base16-gruvbox-dark-medium.colors: "\" vi:syntax=vim\n\n\" base16-vim ..."
+  description: A dict of color schemes mapped to nested dicts of rendered templates
+  type: dict
+  sample:
+    schemes:
+      tomorrow-night:
+        shell:
+          scripts:
+            base16-tomorrow-night.sh: "#!/bin/sh\n# base16-shell ..."
+        vim:
+          colors:
+            base16-tomorrow-night.colors: "\" vi:syntax=vim\n\n\" base16-vim ..."
+      gruvbox-light-soft:
+        shell:
+          scripts:
+            base16-gruvbox-light-soft.sh: "#!/bin/sh\n# base16-shell ..."
+        vim:
+          colors:
+            base16-gruvbox-light-soft.colors: "\" vi:syntax=vim\n\n\" base16-vim ..."
+      gruvbox-dark-medium:
+        shell:
+          scripts:
+            base16-gruvbox-dark-medium.sh: "#!/bin/sh\n# base16-shell ..."
+        vim:
+          colors:
+            base16-gruvbox-dark-medium.colors: "\" vi:syntax=vim\n\n\" base16-vim ..."
 '''
 
 import os 

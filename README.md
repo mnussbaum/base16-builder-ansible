@@ -59,7 +59,7 @@ tasks:
   # You can write the generated color schemes to a file or render them into your
   # own templates
   - copy:
-      content: "{{ base16_schemes['tomorrow-night']['shell']['scripts']['base16-tomorrow-night.config'] }}"
+      content: "{{ base16_schemes['tomorrow-night']['shell']['scripts']['base16-tomorrow-night.sh'] }}"
       dest: /my/bash/profile/dir/tomorrow-night-shell.sh
 
   # Build every template for a single color scheme
@@ -114,7 +114,6 @@ scheme:
   required: false
   type: string
   default: Build all schemes
-
 template:
   description:
     - Set this to the name of a template to only build that one template instead of building all, which is the default
@@ -122,7 +121,6 @@ template:
   required: false
   type: string
   default: Build all templates
-
 cache_dir:
   description:
     - Parent directory to store cloned scheme, template and source data
@@ -131,7 +129,6 @@ cache_dir:
   required: false
   type: string
   default: First available of $XDG_CACHE_DIR, $HOME/.cache, or platform derived temp dir
-
 schemes_source:
   description:
     - Git repo URL to clone for scheme source data
@@ -139,7 +136,6 @@ schemes_source:
   required: false
   type: string
   default: https://github.com/chriskempson/base16-schemes-source
-
 templates_source:
   description:
     - Git repo URL to clone for template source data
@@ -147,7 +143,6 @@ templates_source:
   required: false
   type: string
   default: https://github.com/chriskempson/base16-templates-source
-
 update:
   description:
     - Clone or pull color scheme and template sources
@@ -156,7 +151,6 @@ update:
   required: false
   type: bool
   default: no
-
 build:
   description:
     - Set to "no" to disable building of any color schemes or templates
@@ -172,9 +166,9 @@ build:
 * Ansible
 * [Pystache](https://github.com/defunkt/pystache), which you can install with:
 
-    ```
-    pip install pystache
-    ```
+  ```bash
+  pip install pystache
+  ```
 
 ## Installation
 
