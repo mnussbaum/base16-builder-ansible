@@ -108,7 +108,7 @@ EXAMPLES = '''
 # You can write the generated color schemes to a file or render them into your
 # own templates
 - copy:
-    content: "{{ base16_schemes['tomorrow-night']['shell']['scripts']['base16-tomorrow-night.sh'] }}"
+    content: "{{ base16_schemes['schemes']['tomorrow-night']['shell']['scripts']['base16-tomorrow-night.sh'] }}"
     dest: /my/bash/profile/dir/tomorrow-night-shell.sh
 
 # Build every template for a single color scheme
