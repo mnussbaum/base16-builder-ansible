@@ -309,7 +309,7 @@ class Base16SourceRepo(object):
     def update(self):
         self.git_repo.clone_or_pull()
         for source_repo in self._source_repos():
-            source_repo.clone_or_pull() 
+            source_repo.clone_or_pull()
 
 
 class Scheme(object):
