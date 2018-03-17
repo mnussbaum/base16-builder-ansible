@@ -1,4 +1,5 @@
-In this demo I'll:
+Check out the recorded demo at [https://youtu.be/MgjApBeqWu4](https://youtu.be/MgjApBeqWu4). In this demo
+I'll:
 
   1. Change my Base16 color scheme from `twilight` to `unikitty-dark` with Ansible
   2. Source my `~/.zshrc` to pick up my new shell theme

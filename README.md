@@ -20,7 +20,8 @@ the latest version of existing color schemes.
 
 In addition to the examples below, check out the [demo](demo) directory for a
 full Ansible playbook that lets you switch between color schemes for Vim, i3
-and Bash.
+and Bash. You can also [check out a recorded run through of the
+demo](https://youtu.be/MgjApBeqWu4).
 
 ## Example usages
 
