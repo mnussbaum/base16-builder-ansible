@@ -13,7 +13,7 @@ If you want to run the demo yourself, kick it off with:
 
     $ ansible-playbook colors.yml
 
-The playbook expects you have `ansible-base16-builder`'s dependencies
+The playbook expects you have `base16-builder-ansible`'s dependencies
 installed, so you'll need `pystache` and Ansible. See the main project README
 for more details.
 
