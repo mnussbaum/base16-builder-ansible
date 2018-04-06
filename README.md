@@ -213,7 +213,7 @@ dependencies. To run the tests:
 
 ```bash
 pip install --user pipenv
-pipenv install
+pipenv install --dev
 pipenv run nose2
 ```
 
