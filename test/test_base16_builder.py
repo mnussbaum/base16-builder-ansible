@@ -84,32 +84,32 @@ class TestBase16Builder(unittest.TestCase):
 
 
         with open(os.path.join(
-            self.test_cache_dir,
-            'base16-builder-ansible',
+            os.path.dirname(__file__),
+            'fixtures',
             'templates',
             'i3',
             'bar-colors/base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night_bar_colors = f.read()
         with open(os.path.join(
-            self.test_cache_dir,
-            'base16-builder-ansible',
+            os.path.dirname(__file__),
+            'fixtures',
             'templates',
             'i3',
             'client-properties/base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night_client_properties = f.read()
         with open(os.path.join(
-            self.test_cache_dir,
-            'base16-builder-ansible',
+            os.path.dirname(__file__),
+            'fixtures',
             'templates',
             'i3',
             'colors/base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night_colors = f.read()
         with open(os.path.join(
-            self.test_cache_dir,
-            'base16-builder-ansible',
+            os.path.dirname(__file__),
+            'fixtures',
             'templates',
             'i3',
             'themes/base16-tomorrow-night.config',
