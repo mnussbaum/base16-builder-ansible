@@ -3,9 +3,7 @@ sudo: required
 services:
   - docker
 
-before_install:
-  - docker build -t base16-builder-ansible-test .
-  - docker run base16-builder-ansible-test
+script: ./ci.sh
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications

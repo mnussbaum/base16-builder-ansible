@@ -1,4 +1,5 @@
-FROM python
+ARG python_version
+FROM python:$python_version
 
 RUN apt-get install --yes --no-install-recommends git \
     && pip install pipenv --upgrade
