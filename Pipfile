@@ -8,4 +8,6 @@ ansible = ">=2.4.3.0"
 pystache = ">=0.5.4"
 
 [dev-packages]
+funcsigs = "*"
+mock = "*"
 nose2 = "*"

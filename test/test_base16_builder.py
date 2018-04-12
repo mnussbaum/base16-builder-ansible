@@ -5,9 +5,12 @@ import shutil
 import tempfile
 
 from ansible.compat.tests import unittest
-from ansible.compat.tests.mock import ANY, call, patch
 from ansible.module_utils import basic
 from ansible.module_utils._text import to_bytes
+try:
+    from ansible.compat.tests.mock import ANY, call, patch
+except ImportError:
+    from mock import ANY, call, patch
 
 from library import base16_builder
 
@@ -76,7 +79,7 @@ def fake_run_command(command, **kwargs):
                     os.path.dirname(__file__),
                     'fixtures',
                     'schemes',
-                    SCHEME_NAME.match(command[2])[1],
+                    SCHEME_NAME.match(command[2]).group(1),
                 ),
                 command[3],
             )
@@ -86,7 +89,7 @@ def fake_run_command(command, **kwargs):
                     os.path.dirname(__file__),
                     'fixtures',
                     'templates',
-                    TEMPLATE_NAME.match(command[2])[1],
+                    TEMPLATE_NAME.match(command[2]).group(1),
                 ),
                 command[3],
             )
