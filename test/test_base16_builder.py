@@ -49,8 +49,17 @@ TEMPLATE_NAME = re.compile(r'.*base16-(.*)$')
 
 
 def fake_run_command(command, **kwargs):
+    print('FAKE RUN COMMAND: {}'.format(command))
     if command and 'git' in command[0]  and command[1] == 'clone':
         if 'schemes-source' in command[2]:
+            print('COPYING {}'.format(
+                os.path.join(
+                    os.path.dirname(__file__),
+                    'fixtures',
+                    'sources',
+                    'schemes',
+                )
+            ))
             shutil.copytree(
                 os.path.join(
                     os.path.dirname(__file__),
