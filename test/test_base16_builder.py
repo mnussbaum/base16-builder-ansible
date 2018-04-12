@@ -274,6 +274,48 @@ class TestBase16Builder(unittest.TestCase):
         ], check_rc=True) in mock_run_command.mock_calls)
 
     @patch.object(basic.AnsibleModule, 'run_command', side_effect=fake_run_command)
+    def test_module_can_use_template_and_scheme_local_paths(self, mock_run_command):
+        set_module_args({
+            'scheme': 'tomorrow-night',
+            'template': 'i3',
+        })
+
+        with self.assertRaises(AnsibleExitJson) as result:
+            base16_builder.main()
+
+        set_module_args({
+            'scheme': 'local-scheme',
+            'template': 'local-template',
+            'schemes_source': 'test/fixtures/sources/schemes',
+            'templates_source': 'test/fixtures/sources/templates',
+            'cache_dir': self.test_cache_dir,
+        })
+
+        with self.assertRaises(AnsibleExitJson) as result:
+            base16_builder.main()
+        result_args = result.exception.args[0]
+
+        self.assertEqual(result_args['changed'], False)
+
+        self.assertFalse(call([
+            ANY,
+            'clone',
+            ANY,
+            ANY,
+        ], check_rc=True) in mock_run_command.mock_calls)
+
+        self.assertEqual(
+            result_args['schemes'], {
+                'local-scheme-night': {'local-template': {
+                    'themes': {'base16-local-scheme-night.test': "000000\n"},
+                }},
+                'local-scheme': {'local-template': {
+                    'themes': {'base16-local-scheme.test': "111111\n"},
+                }},
+            },
+        )
+
+    @patch.object(basic.AnsibleModule, 'run_command', side_effect=fake_run_command)
     def test_module_fails_when_no_schemes_are_found_and_a_scheme_is_passed(self, mock_run_command):
         set_module_args({
             'scheme': 'not-a-real-scheme',
