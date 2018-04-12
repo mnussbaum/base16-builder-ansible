@@ -1,15 +1,11 @@
-language: python
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
+sudo: required
 
-install:
-  - pip install pipenv
-  - pipenv install --dev
+services:
+  - docker
 
-script: pipenv run nose2
+before_install:
+  - docker build -t base16-builder-ansible-test .
+  - docker run base16-builder-ansible-test
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications

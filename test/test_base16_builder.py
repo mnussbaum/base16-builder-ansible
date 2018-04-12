@@ -49,17 +49,8 @@ TEMPLATE_NAME = re.compile(r'.*base16-(.*)$')
 
 
 def fake_run_command(command, **kwargs):
-    print('FAKE RUN COMMAND: {}'.format(command))
     if command and 'git' in command[0]  and command[1] == 'clone':
         if 'schemes-source' in command[2]:
-            print('COPYING {}'.format(
-                os.path.join(
-                    os.path.dirname(__file__),
-                    'fixtures',
-                    'sources',
-                    'schemes',
-                )
-            ))
             shutil.copytree(
                 os.path.join(
                     os.path.dirname(__file__),
@@ -315,14 +306,6 @@ class TestBase16Builder(unittest.TestCase):
 
     @patch.object(basic.AnsibleModule, 'run_command', side_effect=fake_run_command)
     def test_module_can_use_template_and_scheme_local_paths(self, mock_run_command):
-        set_module_args({
-            'scheme': 'tomorrow-night',
-            'template': 'i3',
-        })
-
-        with self.assertRaises(AnsibleExitJson) as result:
-            base16_builder.main()
-
         set_module_args({
             'scheme': 'local-scheme',
             'template': 'local-template',
