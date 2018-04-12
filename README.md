@@ -222,7 +222,7 @@ You can also run the tests in a Docker container against all supported Python
 versions with:
 
 ```bash
-./ci.sh
+./ci
 ```
 
 ## License
