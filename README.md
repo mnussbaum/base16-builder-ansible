@@ -136,15 +136,15 @@ cache_dir:
   default: First available of $XDG_CACHE_DIR, $HOME/.cache, or platform derived temp dir
 schemes_source:
   description:
-    - Git repo URL to clone for scheme source data
-    - These repos include a list.yaml file that maps scheme names to Git source repos
+    - Git repo URL or local directory path used to find schemes
+    - The source must include a list.yaml file that maps scheme names to scheme repo Git URLs or local directory paths
   required: false
   type: string
   default: https://github.com/chriskempson/base16-schemes-source
 templates_source:
   description:
-    - Git repo URL to clone for template source data
-    - These repos include a list.yaml file that maps template names to Git source repos
+    - Git repo URL or local directory path used to find templates
+    - The source must include a list.yaml file that maps template names to template repo Git URLs or local directory paths
   required: false
   type: string
   default: https://github.com/chriskempson/base16-templates-source
@@ -224,5 +224,4 @@ pipenv run nose2
 ## To do
 
 * Parallelize git pulls
-* Allow schemes and templates to be local file paths to ease developing new ones
 * Allow the Base16 unclaimed schemes to be used too
