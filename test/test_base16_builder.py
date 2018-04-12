@@ -49,15 +49,33 @@ TEMPLATE_NAME = re.compile(r'.*base16-(.*)$')
 
 
 def fake_run_command(command, **kwargs):
-    if command and command[0] == '/usr/bin/git' and command[1] == 'clone':
+    if command and 'git' in command[0]  and command[1] == 'clone':
         if 'schemes-source' in command[2]:
-            shutil.copytree('./test/fixtures/sources/schemes', command[3])
+            shutil.copytree(
+                os.path.join(
+                    os.path.dirname(__file__),
+                    'fixtures',
+                    'sources',
+                    'schemes',
+                ),
+                command[3],
+            )
         elif 'templates-source' in command[2]:
-            shutil.copytree('./test/fixtures/sources/templates', command[3])
+            shutil.copytree(
+                os.path.join(
+                    os.path.dirname(__file__),
+                    'fixtures',
+                    'sources',
+                    'templates',
+                ),
+                command[3],
+            )
         elif SCHEME_NAME.match(command[2]):
             shutil.copytree(
                 os.path.join(
-                    './test/fixtures/schemes',
+                    os.path.dirname(__file__),
+                    'fixtures',
+                    'schemes',
                     SCHEME_NAME.match(command[2])[1],
                 ),
                 command[3],
@@ -65,7 +83,9 @@ def fake_run_command(command, **kwargs):
         elif TEMPLATE_NAME.match(command[2]):
             shutil.copytree(
                 os.path.join(
-                    './test/fixtures/templates',
+                    os.path.dirname(__file__),
+                    'fixtures',
+                    'templates',
                     TEMPLATE_NAME.match(command[2])[1],
                 ),
                 command[3],
@@ -77,7 +97,7 @@ def fake_run_command(command, **kwargs):
         with open(os.path.join(command[3], '.git', 'config'), 'w') as git_config:
             git_config.write('url = {}'.format(command[2]))
 
-    elif command and command[0] == '/usr/bin/git' and command[1] == 'pull':
+    elif command and git in command[0] and command[1] == 'pull':
         return
     else:
         raise ValueError('Unexpected command: {}'.format(' '.join(command)))
@@ -122,7 +142,8 @@ class TestBase16Builder(unittest.TestCase):
             'fixtures',
             'templates',
             'i3',
-            'bar-colors/base16-tomorrow-night.config',
+            'bar-colors',
+            'base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night_bar_colors = f.read()
         with open(os.path.join(
@@ -130,7 +151,8 @@ class TestBase16Builder(unittest.TestCase):
             'fixtures',
             'templates',
             'i3',
-            'client-properties/base16-tomorrow-night.config',
+            'client-properties',
+            'base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night_client_properties = f.read()
         with open(os.path.join(
@@ -138,7 +160,8 @@ class TestBase16Builder(unittest.TestCase):
             'fixtures',
             'templates',
             'i3',
-            'colors/base16-tomorrow-night.config',
+            'colors',
+            'base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night_colors = f.read()
         with open(os.path.join(
@@ -146,7 +169,8 @@ class TestBase16Builder(unittest.TestCase):
             'fixtures',
             'templates',
             'i3',
-            'themes/base16-tomorrow-night.config',
+            'themes',
+            'base16-tomorrow-night.config',
         )) as f:
             i3_tomorrow_night = f.read()
 
@@ -293,8 +317,18 @@ class TestBase16Builder(unittest.TestCase):
         set_module_args({
             'scheme': 'local-scheme',
             'template': 'local-template',
-            'schemes_source': 'test/fixtures/sources/schemes',
-            'templates_source': 'test/fixtures/sources/templates',
+            'schemes_source': os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'sources',
+                'schemes',
+            ),
+            'templates_source': os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'sources',
+                'templates',
+            ),
             'cache_dir': self.test_cache_dir,
         })
 
