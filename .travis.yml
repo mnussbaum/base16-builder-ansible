@@ -1,9 +1,9 @@
 sudo: required
-
 services:
   - docker
 
-script: ./ci.sh
+language: python
+script: ./ci
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications
