@@ -224,6 +224,5 @@ pipenv run nose2
 ## To do
 
 * Parallelize git pulls
-* Make the tests use fixtures instead of actually cloning repos
 * Allow schemes and templates to be local file paths to ease developing new ones
 * Allow the Base16 unclaimed schemes to be used too
