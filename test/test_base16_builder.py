@@ -2,6 +2,7 @@ import json
 import os
 import re
 import shutil
+import tempfile
 
 from ansible.compat.tests import unittest
 from ansible.compat.tests.mock import ANY, call, patch
@@ -95,7 +96,10 @@ class TestBase16Builder(unittest.TestCase):
         )
         self.mock_module_helper.start()
         self.module = base16_builder
-        self.test_cache_dir = '/tmp/base16-builder-ansible-test'
+        self.test_cache_dir = os.path.join(
+            tempfile.gettempdir(),
+            'base16-builder-ansible-test',
+        )
         self.delete_test_cache_dir()
 
     def tearDown(self):
