@@ -44,6 +44,9 @@ SCHEME_NAME = re.compile(r'.*base16-(.*)-scheme$')
 TEMPLATE_NAME = re.compile(r'.*base16-(.*)$')
 
 
+# TODO: Tests on failed git commands
+
+
 def fake_run_command(command, **kwargs):
     if command and command[0] == '/usr/bin/git' and command[1] == 'clone':
         if 'schemes-source' in command[2]:
