@@ -168,7 +168,7 @@ build:
 
 ## Dependencies
 
-* Python 2.7, or 3.4 or greater
+* Python 2.7, or 3.5 or greater
 * Ansible
 * [Pystache](https://github.com/defunkt/pystache), which you can install with:
 
