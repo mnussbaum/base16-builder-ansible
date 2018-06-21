@@ -27,6 +27,14 @@ options:
     required: false
     type: string
     default: Build all schemes
+  scheme_family:
+    description:
+      - Set this to the name of a group of schemes that live in a single repo (i.e. a family) to only build that group of schemes
+      - If this is unset, and a scheme argument is passed, it's expected the scheme name is present in the scheme family name. E.g. Scheme family "tomorrow" is present in scheme names "tomorrow-night" and "tomorrow"
+      - Only set this arg if the scheme family name isn't included in the scheme names. E.g. scheme family "materialtheme" isn't included in scheme name "material-darker"
+    required: false
+    type: string
+    default: Build all schemes
   template:
     description:
       - Set this to the name of a template to only build that one template instead of building all, which is the default
@@ -402,7 +410,8 @@ class SchemeRepo(object):
         # scheme. We still need to do an exact comparison with the scheme slug
         # to only yield a single requested scheme though.
         module_scheme_arg = self.module.params.get('scheme')
-        if module_scheme_arg and not self.name in module_scheme_arg:
+        module_scheme_family_arg = self.module.params.get('scheme_family') or module_scheme_arg
+        if module_scheme_family_arg and not self.name in module_scheme_family_arg:
             return
 
         self.git_repo.clone_if_missing()
@@ -578,6 +587,7 @@ def main():
             update=dict(type='bool', required=False, default=False),
             build=dict(type='bool', required=False, default=True),
             scheme=dict(type='str', required=False),
+            scheme_family=dict(type='str', required=False),
             template=dict(type='str', required=False),
             cache_dir=dict(type='str', required=False, default=default_cache_dir),
             schemes_source=dict(type='str', required=False, default='https://github.com/chriskempson/base16-schemes-source'),

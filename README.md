@@ -120,6 +120,14 @@ scheme:
   required: false
   type: string
   default: Build all schemes
+scheme_family:
+  description:
+    - Set this to the name of a group of schemes that live in a single repo (i.e. a family) to only build that group of schemes
+    - If this is unset, and a scheme argument is passed, it's expected the scheme name is present in the scheme family name. E.g. Scheme family "tomorrow" is present in scheme names "tomorrow-night" and "tomorrow"
+    - Only set this arg if the scheme family name isn't included in the scheme names. E.g. scheme family "materialtheme" isn't included in scheme name "material-darker"
+  required: false
+  type: string
+  default: Build all schemes
 template:
   description:
     - Set this to the name of a template to only build that one template instead of building all, which is the default

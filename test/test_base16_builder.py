@@ -203,6 +203,21 @@ class TestBase16Builder(unittest.TestCase):
         self.assertIn('tomorrow', result_args['schemes'])
 
     @patch.object(basic.AnsibleModule, 'run_command', side_effect=fake_run_command)
+    def test_module_builds_a_scheme_if_family_name_differs_and_is_passed_in(self, mock_run_command):
+        set_module_args({
+            'scheme': 'material-palenight',
+            'scheme_family': 'materialtheme',
+            'template': 'i3',
+            'cache_dir': self.test_cache_dir,
+        })
+
+        with self.assertRaises(AnsibleExitJson) as result:
+            base16_builder.main()
+        result_args = result.exception.args[0]
+
+        self.assertIn('material-palenight', result_args['schemes'])
+
+    @patch.object(basic.AnsibleModule, 'run_command', side_effect=fake_run_command)
     def test_module_builds_nothing_if_build_false_is_passed(self, mock_run_command):
         set_module_args({'build': False})
 
