@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-ansible = ">=2.4.3.0"
+ansible = ">=2.5.5"
 pystache = ">=0.5.4"
 
 [dev-packages]
