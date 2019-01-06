@@ -379,12 +379,12 @@ class Scheme(object):
                 '{}-b'.format(base_hex_key): self._data()[base_key][4:6],
             })
             self.base16_vars.update({
-                '{}-rgb-r'.format(base_hex_key): str(int(self.base16_vars[base_hex_key + '-r'],  16)),
-                '{}-rgb-g'.format(base_hex_key): str(int(self.base16_vars[base_hex_key + '-g'], 16)),
-                '{}-rgb-b'.format(base_hex_key): str(int(self.base16_vars[base_hex_key + '-b'], 16)),
-                '{}-dec-r'.format(base_hex_key): str(int(self.base16_vars[base_hex_key + '-r'], 16) / 255),
-                '{}-dec-g'.format(base_hex_key): str(int(self.base16_vars[base_hex_key + '-g'], 16) / 255),
-                '{}-dec-b'.format(base_hex_key): str(int(self.base16_vars[base_hex_key + '-b'], 16) / 255),
+                '{}-rgb-r'.format(base_key): str(int(self.base16_vars[base_hex_key + '-r'],  16)),
+                '{}-rgb-g'.format(base_key): str(int(self.base16_vars[base_hex_key + '-g'], 16)),
+                '{}-rgb-b'.format(base_key): str(int(self.base16_vars[base_hex_key + '-b'], 16)),
+                '{}-dec-r'.format(base_key): str(int(self.base16_vars[base_hex_key + '-r'], 16) / 255),
+                '{}-dec-g'.format(base_key): str(int(self.base16_vars[base_hex_key + '-g'], 16) / 255),
+                '{}-dec-b'.format(base_key): str(int(self.base16_vars[base_hex_key + '-b'], 16) / 255),
             })
 
         self.computed_bases = True

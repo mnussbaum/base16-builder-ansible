@@ -358,10 +358,10 @@ class TestBase16Builder(unittest.TestCase):
         self.assertEqual(
             result_args['schemes'], {
                 'local-scheme-night': {'local-template': {
-                    'themes': {'base16-local-scheme-night.test': "000000\n"},
+                    'themes': {'base16-local-scheme-night.test': "000000\n00\n00\n00\n0\n0\n0\n0.0\n0.0\n0.0\n"},
                 }},
                 'local-scheme': {'local-template': {
-                    'themes': {'base16-local-scheme.test': "111111\n"},
+                    'themes': {'base16-local-scheme.test': "111111\n11\n11\n11\n17\n17\n17\n0.06666666666666667\n0.06666666666666667\n0.06666666666666667\n"},
                 }},
             },
         )
