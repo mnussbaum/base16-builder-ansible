@@ -206,7 +206,7 @@ except (ImportError, ModuleNotFoundError) as err:
 
 def open_yaml(path):
     with open(path) as yaml_file:
-        return yaml.load(yaml_file)
+        return yaml.safe_load(yaml_file)
 
 
 class GitRepo(object):
