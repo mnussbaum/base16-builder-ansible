@@ -3,7 +3,7 @@
 import os
 import subprocess
 
-for python_version in ('2.7', '3.5', '3.6'):
+for python_version in ('3.5', '3.6', '3.7'):
     subprocess.check_call([
       'docker', 'build',
       '-t', 'base16-builder-ansible-test-{}'.format(python_version),
