@@ -409,9 +409,7 @@ class SchemeRepo(object):
         # Only clone and yield scheme repos that could contain the requested
         # scheme. We still need to do an exact comparison with the scheme slug
         # to only yield a single requested scheme though.
-        module_scheme_arg = self.module.params.get('scheme')
-        module_scheme_family_arg = self.module.params.get('scheme_family') or module_scheme_arg
-        if module_scheme_family_arg and not self.name in module_scheme_family_arg:
+        if not self._matches_params():
             return
 
         self.git_repo.clone_if_missing()
@@ -420,13 +418,25 @@ class SchemeRepo(object):
             if os.path.splitext(path)[1] in ['.yaml', '.yml']:
                 # Cache schemes here?
                 scheme = Scheme(self.builder, os.path.join(self.git_repo.path, path))
-                if module_scheme_arg and module_scheme_arg not in scheme.slug():
+                module_scheme_arg = self.module.params.get('scheme')
+                if module_scheme_arg is not None and module_scheme_arg not in scheme.slug():
                     continue
 
                 yield scheme
 
     def clone_or_pull(self):
+        if not self._matches_params():
+            return
+
         self.git_repo.clone_or_pull()
+
+    def _matches_params(self):
+        module_scheme_arg = self.module.params.get('scheme')
+        module_scheme_family_arg = self.module.params.get('scheme_family') or module_scheme_arg
+        if module_scheme_family_arg is None:
+            return True
+
+        return self.name in module_scheme_family_arg
 
 
 class Template(object):
@@ -474,8 +484,7 @@ class TemplateRepo(object):
         self.templates_dir = os.path.join(self.git_repo.path, 'templates')
 
     def sources(self):
-        module_template_arg = self.module.params.get('template')
-        if module_template_arg and self.name != module_template_arg:
+        if not self._matches_params():
             return
 
         self.git_repo.clone_if_missing()
@@ -498,7 +507,17 @@ class TemplateRepo(object):
                 )
 
     def clone_or_pull(self):
+        if not self._matches_params():
+            return
+
         self.git_repo.clone_or_pull()
+
+    def _matches_params(self):
+        module_template_arg = self.module.params.get('template')
+        if module_template_arg is None:
+            return True
+
+        return self.name == module_template_arg
 
 
 class Base16Builder(object):
@@ -523,7 +542,6 @@ class Base16Builder(object):
         if self.module.params['update']:
             self.schemes_repo.update()
             self.templates_repo.update()
-            self.result['changed'] = True
 
         if not self.module.params['build']:
             self.module.exit_json(**self.result)

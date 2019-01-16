@@ -271,6 +271,41 @@ class TestBase16Builder(unittest.TestCase):
         self.assertEqual(result_args['changed'], True)
 
     @patch.object(basic.AnsibleModule, 'run_command', side_effect=fake_run_command)
+    def test_module_update_can_use_template_and_scheme(self, mock_run_command):
+        set_module_args({
+            'update': True,
+            'build': False,
+            'scheme': '',
+            'template': '',
+            'cache_dir': self.test_cache_dir
+        })
+
+        with self.assertRaises(AnsibleExitJson) as result:
+            base16_builder.main()
+        result_args = result.exception.args[0]
+
+        self.assertEqual(
+            [
+                call([
+                    ANY,
+                    'clone',
+                    'https://github.com/chriskempson/base16-schemes-source',
+                    ANY,
+                ], check_rc=True),
+                call([
+                    ANY,
+                    'clone',
+                    'https://github.com/chriskempson/base16-templates-source',
+                    ANY,
+                ], check_rc=True),
+            ],
+            mock_run_command.mock_calls,
+        )
+
+        self.assertEqual(list(result_args['schemes'].keys()), [])
+        self.assertTrue(result_args['changed'])
+
+    @patch.object(basic.AnsibleModule, 'run_command', side_effect=fake_run_command)
     def test_module_can_use_template_and_scheme_repos(self, mock_run_command):
         set_module_args({
             'scheme': 'tomorrow-night',
