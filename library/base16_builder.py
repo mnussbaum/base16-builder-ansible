@@ -108,7 +108,22 @@ EXAMPLES = '''
 #         "scripts": {
 #           "base16-tomorrow-night.sh": "#!/bin/sh\n# base16-shell ..."
 #         }
-#       }
+#       },
+#       "scheme-variables": {
+#         "base00-dec-b": "0.12941176470588237",
+#         "base00-dec-g": "0.12156862745098039",
+#         "base00-dec-r": "0.11372549019607843",
+#         "base00-hex": "1d1f21",
+#         "base00-hex-b": "21",
+#         "base00-hex-g": "1f",
+#         "base00-hex-r": "1d",
+#         "base00-rgb-b": "33",
+#         "base00-rgb-g": "31",
+#         "base00-rgb-r": "29",
+#         ...Many more color variables...
+#         "scheme-author": "Chris Kempson (http://chriskempson.com)",
+#         "scheme-name": "Tomorrow Night",
+#         "scheme-slug": "tomorrow-night"
 #     }
 #   }
 # }
@@ -163,11 +178,26 @@ EXAMPLES = '''
 
 RETURN = '''
 schemes:
-  description: A dict of color schemes mapped to nested dicts of rendered templates
+  description: A dict of color schemes mapped to nested dicts of rendered templates. One special template is also rendered for every color scheme called "scheme-variables". This contains the raw base16 color variables used for that scheme. These can be useful for rendering Ansible templates with individual color codes.
   type: dict
   sample:
     schemes:
       tomorrow-night:
+        scheme-variables:
+          scheme-author: "Chris Kempson (http://chriskempson.com)"
+          scheme-name: "Tomorrow Night"
+          scheme-slug: "tomorrow-night"
+          base00-dec-b: "0.12941176470588237"
+          base00-dec-g: "0.12156862745098039"
+          base00-dec-r: "0.11372549019607843"
+          base00-hex: "1d1f21"
+          base00-hex-b: "21"
+          base00-hex-g: "1f"
+          base00-hex-r: "1d"
+          base00-rgb-b: "33"
+          base00-rgb-g: "31"
+          base00-rgb-r: "29"
+          ...Many more colors variables...
         shell:
           scripts:
             base16-tomorrow-night.sh: "#!/bin/sh\n# base16-shell ..."
@@ -175,6 +205,8 @@ schemes:
           colors:
             base16-tomorrow-night.colors: "\" vi:syntax=vim\n\n\" base16-vim ..."
       gruvbox-light-soft:
+        scheme-variables:
+          ...Color variables...
         shell:
           scripts:
             base16-gruvbox-light-soft.sh: "#!/bin/sh\n# base16-shell ..."
@@ -182,6 +214,8 @@ schemes:
           colors:
             base16-gruvbox-light-soft.colors: "\" vi:syntax=vim\n\n\" base16-vim ..."
       gruvbox-dark-medium:
+        scheme-variables:
+          ...Color variables...
         shell:
           scripts:
             base16-gruvbox-dark-medium.sh: "#!/bin/sh\n# base16-shell ..."
@@ -334,9 +368,7 @@ class Base16SourceRepo(object):
 
 
 class Scheme(object):
-    def __init__(self, builder, path):
-        self.builder = builder
-        self.module = builder.module
+    def __init__(self, path):
         self.path = path
         self.data = {}
         self._slug = None
@@ -417,7 +449,7 @@ class SchemeRepo(object):
         for path in os.listdir(self.git_repo.path):
             if os.path.splitext(path)[1] in ['.yaml', '.yml']:
                 # Cache schemes here?
-                scheme = Scheme(self.builder, os.path.join(self.git_repo.path, path))
+                scheme = Scheme(os.path.join(self.git_repo.path, path))
                 module_scheme_arg = self.module.params.get('scheme')
                 if module_scheme_arg is not None and module_scheme_arg not in scheme.slug():
                     continue
@@ -440,9 +472,7 @@ class SchemeRepo(object):
 
 
 class Template(object):
-    def __init__(self, builder, family, path, config):
-        self.builder = builder
-        self.module = builder.module
+    def __init__(self, family, path, config):
         self.family = family
         self.path = path
         self.config = config
@@ -500,7 +530,6 @@ class TemplateRepo(object):
             )).items():
                 # Cache here?
                 yield Template(
-                    self.builder,
                     self.name,
                     os.path.join(self.templates_dir, '{}.mustache'.format(template_name)),
                     template_config,
@@ -550,6 +579,8 @@ class Base16Builder(object):
             scheme_result = {}
             self.result['schemes'][scheme.slug()] = scheme_result
 
+            scheme_result['scheme-variables'] = scheme.base16_variables()
+
             for template in self.templates_repo.sources():
                 build_result = template.build(scheme)
                 if not scheme_result.get(template.family):
@@ -563,7 +594,7 @@ class Base16Builder(object):
                 template_result = template_family_result[build_result['output_dir']]
                 template_result[build_result['output_file_name']] = build_result['output']
 
-            if not scheme_result:
+            if len(scheme_result) == 1 and self.module.params['template']:
                 failure_msg = 'Failed to build any templates.'
                 if self.module.params['template']:
                     failure_msg = '{} Template name "{}" was passed, but didn\'t match any known templates'.format(

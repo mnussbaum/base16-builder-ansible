@@ -52,7 +52,23 @@ tasks:
   #         "scripts": {
   #           "base16-tomorrow-night.sh": "#!/bin/sh\n# base16-shell ..."
   #         }
-  #       }
+  #       },
+  #       "scheme-variables": {
+  #         "base00-dec-b": "0.12941176470588237",
+  #         "base00-dec-g": "0.12156862745098039",
+  #         "base00-dec-r": "0.11372549019607843",
+  #         "base00-hex": "1d1f21",
+  #         "base00-hex-b": "21",
+  #         "base00-hex-g": "1f",
+  #         "base00-hex-r": "1d",
+  #         "base00-rgb-b": "33",
+  #         "base00-rgb-g": "31",
+  #         "base00-rgb-r": "29",
+  #         ...Many more color variables...
+  #         "scheme-author": "Chris Kempson (http://chriskempson.com)",
+  #         "scheme-name": "Tomorrow Night",
+  #         "scheme-slug": "tomorrow-night"
+  #     }
   #     }
   #   }
   # }
