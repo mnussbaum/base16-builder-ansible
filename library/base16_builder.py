@@ -3,12 +3,12 @@
 # -*- coding: utf-8 -*-
 
 ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
+    "metadata_version": "1.1",
+    "status": ["preview"],
+    "supported_by": "community",
 }
 
-DOCUMENTATION = '''
+DOCUMENTATION = """
 ---
 module: base16_builder
 
@@ -79,9 +79,9 @@ options:
     required: false
     type: bool
     default: yes
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = """
 # Build a single color scheme and template and assign it to a variable
 - base16_builder:
     scheme: tomorrow-night
@@ -174,9 +174,9 @@ EXAMPLES = '''
     template: shell
     schemes_source: http://github.com/my-user/my-schemes-source-fork
     templates_source: http://github.com/my-user/my-templates-source-fork
-'''
+"""
 
-RETURN = '''
+RETURN = """
 schemes:
   description: A dict of color schemes mapped to nested dicts of rendered templates. One special template is also rendered for every color scheme called "scheme-variables". This contains the raw base16 color variables used for that scheme. These can be useful for rendering Ansible templates with individual color codes.
   type: dict
@@ -222,7 +222,7 @@ schemes:
         vim:
           colors:
             base16-gruvbox-dark-medium.colors: "\" vi:syntax=vim\n\n\" base16-vim ..."
-'''
+"""
 
 import os
 import shutil
@@ -247,7 +247,7 @@ class GitRepo(object):
     def __init__(self, builder, url_or_local_path, clone_dest):
         self.builder = builder
         self.module = builder.module
-        self.git_path = self.module.get_bin_path('git', True)
+        self.git_path = self.module.get_bin_path("git", True)
 
         if os.path.exists(url_or_local_path):
             self.path = url_or_local_path
@@ -257,30 +257,27 @@ class GitRepo(object):
             self.url = url_or_local_path
             self.path = clone_dest
 
-        self.git_config_path = os.path.join(self.path, '.git', 'config')
+        self.git_config_path = os.path.join(self.path, ".git", "config")
 
     def clone_or_pull(self):
         if self.local_repo:
             return
 
         if not self.clone_if_missing():
-            self.builder.result['changed'] = True
+            self.builder.result["changed"] = True
             if self.module.check_mode:
                 return
 
             self.module.run_command(
-                [self.git_path, 'pull'],
-                cwd=self.path,
-                check_rc=True,
+                [self.git_path, "pull"], cwd=self.path, check_rc=True
             )
-
 
     def clone_if_missing(self):
         if self.local_repo:
             return
 
         if not os.path.exists(os.path.dirname(self.path)):
-            self.builder.result['changed'] = True
+            self.builder.result["changed"] = True
             if self.module.check_mode:
                 return
 
@@ -289,7 +286,7 @@ class GitRepo(object):
         if self._repo_at_path():
             return False
 
-        self.builder.result['changed'] = True
+        self.builder.result["changed"] = True
         if self.module.check_mode:
             return
 
@@ -298,8 +295,7 @@ class GitRepo(object):
             shutil.rmtree(self.path)
 
         self.module.run_command(
-            [self.git_path, 'clone', self.url, self.path],
-            check_rc=True,
+            [self.git_path, "clone", self.url, self.path], check_rc=True
         )
 
         return True
@@ -314,7 +310,7 @@ class GitRepo(object):
             return False
 
         with open(self.git_config_path) as git_config:
-            if 'url = {}'.format(self.url) in git_config.read():
+            if "url = {}".format(self.url) in git_config.read():
                 return True
 
         return False
@@ -328,28 +324,27 @@ class Base16SourceRepo(object):
         self.source_type = source_repo_class.source_type
         self.git_repo = GitRepo(
             builder,
-            self.module.params['{}_source'.format(self.source_type)],
+            self.module.params["{}_source".format(self.source_type)],
             os.path.join(
-                self.module.params['cache_dir'],
-                'base16-builder-ansible',
-                'sources',
+                self.module.params["cache_dir"],
+                "base16-builder-ansible",
+                "sources",
                 self.source_type,
             ),
         )
 
     def _source_repos(self):
-        for (source_family, source_url) in open_yaml(os.path.join(
-            self.git_repo.path,
-            'list.yaml',
-        )).items():
+        for (source_family, source_url) in open_yaml(
+            os.path.join(self.git_repo.path, "list.yaml")
+        ).items():
             # Not sure if caching this value would be good or not
             yield self.source_repo_class(
                 self.builder,
                 source_family,
                 source_url,
                 os.path.join(
-                    self.module.params['cache_dir'],
-                    'base16-builder-ansible',
+                    self.module.params["cache_dir"],
+                    "base16-builder-ansible",
                     self.source_type,
                     source_family,
                 ),
@@ -374,9 +369,9 @@ class Scheme(object):
         self._slug = None
 
         self.base16_vars = {
-            'scheme-author': self._data()['author'],
-            'scheme-name': self._data()['scheme'],
-            'scheme-slug': self.slug(),
+            "scheme-author": self._data()["author"],
+            "scheme-name": self._data()["scheme"],
+            "scheme-slug": self.slug(),
         }
         self.computed_bases = False
 
@@ -391,9 +386,9 @@ class Scheme(object):
         if self._slug:
             return self._slug
 
-        self._slug = os.path.splitext(
-            os.path.basename(self.path)
-        )[0].lower().replace(' ', ' ')
+        self._slug = (
+            os.path.splitext(os.path.basename(self.path))[0].lower().replace(" ", " ")
+        )
 
         return self._slug
 
@@ -401,41 +396,52 @@ class Scheme(object):
         if self.computed_bases:
             return self.base16_vars
 
-        for base in ['{:02X}'.format(i) for i in range(16)]:
-            base_key = 'base{}'.format(base)
-            base_hex_key = '{}-hex'.format(base_key)
-            self.base16_vars.update({
-                base_hex_key: self._data()[base_key],
-                '{}-r'.format(base_hex_key): self._data()[base_key][0:2],
-                '{}-g'.format(base_hex_key): self._data()[base_key][2:4],
-                '{}-b'.format(base_hex_key): self._data()[base_key][4:6],
-            })
-            self.base16_vars.update({
-                '{}-rgb-r'.format(base_key): str(int(self.base16_vars[base_hex_key + '-r'],  16)),
-                '{}-rgb-g'.format(base_key): str(int(self.base16_vars[base_hex_key + '-g'], 16)),
-                '{}-rgb-b'.format(base_key): str(int(self.base16_vars[base_hex_key + '-b'], 16)),
-                '{}-dec-r'.format(base_key): str(int(self.base16_vars[base_hex_key + '-r'], 16) / 255),
-                '{}-dec-g'.format(base_key): str(int(self.base16_vars[base_hex_key + '-g'], 16) / 255),
-                '{}-dec-b'.format(base_key): str(int(self.base16_vars[base_hex_key + '-b'], 16) / 255),
-            })
+        for base in ["{:02X}".format(i) for i in range(16)]:
+            base_key = "base{}".format(base)
+            base_hex_key = "{}-hex".format(base_key)
+            self.base16_vars.update(
+                {
+                    base_hex_key: self._data()[base_key],
+                    "{}-r".format(base_hex_key): self._data()[base_key][0:2],
+                    "{}-g".format(base_hex_key): self._data()[base_key][2:4],
+                    "{}-b".format(base_hex_key): self._data()[base_key][4:6],
+                }
+            )
+            self.base16_vars.update(
+                {
+                    "{}-rgb-r".format(base_key): str(
+                        int(self.base16_vars[base_hex_key + "-r"], 16)
+                    ),
+                    "{}-rgb-g".format(base_key): str(
+                        int(self.base16_vars[base_hex_key + "-g"], 16)
+                    ),
+                    "{}-rgb-b".format(base_key): str(
+                        int(self.base16_vars[base_hex_key + "-b"], 16)
+                    ),
+                    "{}-dec-r".format(base_key): str(
+                        int(self.base16_vars[base_hex_key + "-r"], 16) / 255
+                    ),
+                    "{}-dec-g".format(base_key): str(
+                        int(self.base16_vars[base_hex_key + "-g"], 16) / 255
+                    ),
+                    "{}-dec-b".format(base_key): str(
+                        int(self.base16_vars[base_hex_key + "-b"], 16) / 255
+                    ),
+                }
+            )
 
         self.computed_bases = True
         return self.base16_vars
 
 
-
 class SchemeRepo(object):
-    source_type = 'schemes'
+    source_type = "schemes"
 
     def __init__(self, builder, name, source_url_or_local_path, clone_dest):
         self.builder = builder
         self.module = builder.module
         self.name = name
-        self.git_repo = GitRepo(
-            self.builder,
-            source_url_or_local_path,
-            clone_dest,
-        )
+        self.git_repo = GitRepo(self.builder, source_url_or_local_path, clone_dest)
 
     def sources(self):
         # Only clone and yield scheme repos that could contain the requested
@@ -447,11 +453,14 @@ class SchemeRepo(object):
         self.git_repo.clone_if_missing()
 
         for path in os.listdir(self.git_repo.path):
-            if os.path.splitext(path)[1] in ['.yaml', '.yml']:
+            if os.path.splitext(path)[1] in [".yaml", ".yml"]:
                 # Cache schemes here?
                 scheme = Scheme(os.path.join(self.git_repo.path, path))
-                module_scheme_arg = self.module.params.get('scheme')
-                if module_scheme_arg is not None and module_scheme_arg not in scheme.slug():
+                module_scheme_arg = self.module.params.get("scheme")
+                if (
+                    module_scheme_arg is not None
+                    and module_scheme_arg not in scheme.slug()
+                ):
                     continue
 
                 yield scheme
@@ -463,8 +472,10 @@ class SchemeRepo(object):
         self.git_repo.clone_or_pull()
 
     def _matches_params(self):
-        module_scheme_arg = self.module.params.get('scheme')
-        module_scheme_family_arg = self.module.params.get('scheme_family') or module_scheme_arg
+        module_scheme_arg = self.module.params.get("scheme")
+        module_scheme_family_arg = (
+            self.module.params.get("scheme_family") or module_scheme_arg
+        )
         if module_scheme_family_arg is None:
             return True
 
@@ -486,32 +497,23 @@ class Template(object):
         #     'base16-{}.{}'.format(scheme.slug(), self.config['extension']),
         # )
         return {
-            'output_dir': self.config['output'],
-            'output_file_name': 'base16-{}{}'.format(
-                scheme.slug(),
-                self.config['extension'],
+            "output_dir": self.config["output"],
+            "output_file_name": "base16-{}{}".format(
+                scheme.slug(), self.config["extension"]
             ),
-            'output': self.renderer.render_path(
-                self.path,
-                scheme.base16_variables(),
-            ),
+            "output": self.renderer.render_path(self.path, scheme.base16_variables()),
         }
 
 
-
 class TemplateRepo(object):
-    source_type = 'templates'
+    source_type = "templates"
 
     def __init__(self, builder, name, url_or_local_path, clone_dest):
         self.builder = builder
         self.module = builder.module
         self.name = name
-        self.git_repo = GitRepo(
-            self.builder,
-            url_or_local_path,
-            clone_dest,
-        )
-        self.templates_dir = os.path.join(self.git_repo.path, 'templates')
+        self.git_repo = GitRepo(self.builder, url_or_local_path, clone_dest)
+        self.templates_dir = os.path.join(self.git_repo.path, "templates")
 
     def sources(self):
         if not self._matches_params():
@@ -521,17 +523,18 @@ class TemplateRepo(object):
 
         for path in os.listdir(self.templates_dir):
             (file_name, file_ext) = os.path.splitext(path)
-            if file_name != 'config' or file_ext not in ['.yaml', '.yml']:
+            if file_name != "config" or file_ext not in [".yaml", ".yml"]:
                 continue
 
-            for template_name, template_config in open_yaml(os.path.join(
-                self.templates_dir,
-                path,
-            )).items():
+            for template_name, template_config in open_yaml(
+                os.path.join(self.templates_dir, path)
+            ).items():
                 # Cache here?
                 yield Template(
                     self.name,
-                    os.path.join(self.templates_dir, '{}.mustache'.format(template_name)),
+                    os.path.join(
+                        self.templates_dir, "{}.mustache".format(template_name)
+                    ),
                     template_config,
                 )
 
@@ -542,7 +545,7 @@ class TemplateRepo(object):
         self.git_repo.clone_or_pull()
 
     def _matches_params(self):
-        module_template_arg = self.module.params.get('template')
+        module_template_arg = self.module.params.get("template")
         if module_template_arg is None:
             return True
 
@@ -556,30 +559,29 @@ class Base16Builder(object):
         self.schemes_repo = Base16SourceRepo(self, SchemeRepo)
         self.templates_repo = Base16SourceRepo(self, TemplateRepo)
 
-        self.result = dict(
-            changed=False,
-            schemes=dict(),
-        )
+        self.result = dict(changed=False, schemes=dict())
 
     def run(self):
         if PYSTACHE_ERR:
             self.module.fail_json(
-                msg='Failed to import pystache. Type `pip install pystache` - {}'.format(PYSTACHE_ERR),
+                msg="Failed to import pystache. Type `pip install pystache` - {}".format(
+                    PYSTACHE_ERR
+                ),
                 **self.result
             )
 
-        if self.module.params['update']:
+        if self.module.params["update"]:
             self.schemes_repo.update()
             self.templates_repo.update()
 
-        if not self.module.params['build']:
+        if not self.module.params["build"]:
             self.module.exit_json(**self.result)
 
         for scheme in self.schemes_repo.sources():
             scheme_result = {}
-            self.result['schemes'][scheme.slug()] = scheme_result
+            self.result["schemes"][scheme.slug()] = scheme_result
 
-            scheme_result['scheme-variables'] = scheme.base16_variables()
+            scheme_result["scheme-variables"] = scheme.base16_variables()
 
             for template in self.templates_repo.sources():
                 build_result = template.build(scheme)
@@ -588,59 +590,61 @@ class Base16Builder(object):
 
                 template_family_result = scheme_result[template.family]
 
-                if not template_family_result.get(build_result['output_dir']):
-                    template_family_result[build_result['output_dir']] = {}
+                if not template_family_result.get(build_result["output_dir"]):
+                    template_family_result[build_result["output_dir"]] = {}
 
-                template_result = template_family_result[build_result['output_dir']]
-                template_result[build_result['output_file_name']] = build_result['output']
+                template_result = template_family_result[build_result["output_dir"]]
+                template_result[build_result["output_file_name"]] = build_result[
+                    "output"
+                ]
 
-            if len(scheme_result) == 1 and self.module.params['template']:
-                failure_msg = 'Failed to build any templates.'
-                if self.module.params['template']:
+            if len(scheme_result) == 1 and self.module.params["template"]:
+                failure_msg = "Failed to build any templates."
+                if self.module.params["template"]:
                     failure_msg = '{} Template name "{}" was passed, but didn\'t match any known templates'.format(
-                        failure_msg,
-                        self.module.params['template'],
+                        failure_msg, self.module.params["template"]
                     )
 
-                self.module.fail_json(
-                    msg=failure_msg,
-                    **self.result
-                )
+                self.module.fail_json(msg=failure_msg, **self.result)
 
-        if not self.result['schemes']:
-            failure_msg = 'Failed to build any schemes.'
-            if self.module.params['scheme']:
+        if not self.result["schemes"]:
+            failure_msg = "Failed to build any schemes."
+            if self.module.params["scheme"]:
                 failure_msg = '{} Scheme name "{}" was passed, but didn\'t match any known schemes'.format(
-                    failure_msg,
-                    self.module.params['scheme'],
+                    failure_msg, self.module.params["scheme"]
                 )
 
-            self.module.fail_json(
-                msg=failure_msg,
-                **self.result
-            )
+            self.module.fail_json(msg=failure_msg, **self.result)
 
         self.module.exit_json(**self.result)
 
 
 def main():
-    if 'XDG_CACHE_DIR' in os.environ.keys():
-        default_cache_dir = os.environ['XDG_CACHE_DIR']
-    elif os.path.exists(os.path.join(os.path.expanduser('~'), '.cache')):
-        default_cache_dir = os.path.join(os.path.expanduser('~'), '.cache')
+    if "XDG_CACHE_DIR" in os.environ.keys():
+        default_cache_dir = os.environ["XDG_CACHE_DIR"]
+    elif os.path.exists(os.path.join(os.path.expanduser("~"), ".cache")):
+        default_cache_dir = os.path.join(os.path.expanduser("~"), ".cache")
     else:
         default_cache_dir = tempfile.gettempdir()
 
     module = AnsibleModule(
         argument_spec=dict(
-            update=dict(type='bool', required=False, default=False),
-            build=dict(type='bool', required=False, default=True),
-            scheme=dict(type='str', required=False),
-            scheme_family=dict(type='str', required=False),
-            template=dict(type='str', required=False),
-            cache_dir=dict(type='str', required=False, default=default_cache_dir),
-            schemes_source=dict(type='str', required=False, default='https://github.com/chriskempson/base16-schemes-source'),
-            templates_source=dict(type='str', required=False, default='https://github.com/chriskempson/base16-templates-source'),
+            update=dict(type="bool", required=False, default=False),
+            build=dict(type="bool", required=False, default=True),
+            scheme=dict(type="str", required=False),
+            scheme_family=dict(type="str", required=False),
+            template=dict(type="str", required=False),
+            cache_dir=dict(type="str", required=False, default=default_cache_dir),
+            schemes_source=dict(
+                type="str",
+                required=False,
+                default="https://github.com/chriskempson/base16-schemes-source",
+            ),
+            templates_source=dict(
+                type="str",
+                required=False,
+                default="https://github.com/chriskempson/base16-templates-source",
+            ),
         ),
         supports_check_mode=True,
     )
@@ -648,5 +652,5 @@ def main():
     return Base16Builder(module).run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
