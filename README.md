@@ -67,7 +67,8 @@ tasks:
   #         ...Many more color variables...
   #         "scheme-author": "Chris Kempson (http://chriskempson.com)",
   #         "scheme-name": "Tomorrow Night",
-  #         "scheme-slug": "tomorrow-night"
+  #         "scheme-slug": "tomorrow-night",
+  #         "scheme-slug-underscored": "tomorrow_night"
   #     }
   #     }
   #   }

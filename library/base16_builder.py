@@ -123,7 +123,8 @@ EXAMPLES = """
 #         ...Many more color variables...
 #         "scheme-author": "Chris Kempson (http://chriskempson.com)",
 #         "scheme-name": "Tomorrow Night",
-#         "scheme-slug": "tomorrow-night"
+#         "scheme-slug": "tomorrow-night",
+#         "scheme-slug-underscored": "tomorrow_night"
 #     }
 #   }
 # }
@@ -186,7 +187,8 @@ schemes:
         scheme-variables:
           scheme-author: "Chris Kempson (http://chriskempson.com)"
           scheme-name: "Tomorrow Night"
-          scheme-slug: "tomorrow-night"
+          scheme-slug: "tomorrow-night",
+          scheme-slug-underscored: "tomorrow_night",
           base00-dec-b: "0.12941176470588237"
           base00-dec-g: "0.12156862745098039"
           base00-dec-r: "0.11372549019607843"
@@ -372,6 +374,7 @@ class Scheme(object):
             "scheme-author": self._data()["author"],
             "scheme-name": self._data()["scheme"],
             "scheme-slug": self.slug(),
+            "scheme-slug-underscored": self.slug().replace("-", "_"),
         }
         self.computed_bases = False
 
