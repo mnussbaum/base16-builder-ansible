@@ -1,5 +1,4 @@
-base16-builder-ansible [![Build Status](https://travis-ci.org/mnussbaum/base16-builder-ansible.svg?branch=master)](https://travis-ci.org/mnussbaum/base16-builder-ansible)
-================
+# base16-builder-ansible [![Build Status](https://travis-ci.org/mnussbaum/base16-builder-ansible.svg?branch=master)](https://travis-ci.org/mnussbaum/base16-builder-ansible)
 
 This role builds and returns [Base16](https://github.com/chriskempson/base16)
 themes. Base16 is a framework for generating themes for a wide variety of
@@ -188,9 +187,9 @@ build:
 
 ## Dependencies
 
-* Python 3.5 or greater, 2.7 will likely work, but is untested
-* Ansible
-* [Pystache](https://github.com/defunkt/pystache), which you can install with:
+- Python 3.5 or greater, 2.7 will likely work, but is untested
+- Ansible
+- [Pystache](https://github.com/defunkt/pystache), which you can install with:
 
   ```bash
   pip install pystache
@@ -251,5 +250,5 @@ versions with:
 
 ## To do
 
-* Parallelize git pulls
-* Allow the Base16 unclaimed schemes to be used too
+- Parallelize git pulls
+- Allow the Base16 unclaimed schemes to be used too
