@@ -3,13 +3,18 @@
 import os
 import subprocess
 
-for python_version in ('3.5', '3.6', '3.7'):
-    subprocess.check_call([
-      'docker', 'build',
-      '-t', 'base16-builder-ansible-test-{}'.format(python_version),
-      '--build-arg', 'python_version={}'.format(python_version),
-      os.path.abspath(os.path.dirname(__file__)),
-    ])
-    subprocess.check_call([
-      'docker', 'run', 'base16-builder-ansible-test-{}'.format(python_version),
-    ])
+for python_version in ("3.5", "3.6", "3.7", "3.8"):
+    subprocess.check_call(
+        [
+            "docker",
+            "build",
+            "-t",
+            "base16-builder-ansible-test-{}".format(python_version),
+            "--build-arg",
+            "python_version={}".format(python_version),
+            os.path.abspath(os.path.dirname(__file__)),
+        ]
+    )
+    subprocess.check_call(
+        ["docker", "run", "base16-builder-ansible-test-{}".format(python_version),]
+    )

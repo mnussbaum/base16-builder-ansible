@@ -1,17 +1,14 @@
 import json
+from unittest.mock import ANY, call, patch
 import os
 import re
 import shutil
 import tempfile
+import unittest
 
-from ansible.compat.tests import unittest
 from ansible.module_utils import basic
 from ansible.module_utils._text import to_bytes
 
-try:
-    from ansible.compat.tests.mock import ANY, call, patch
-except ImportError:
-    from mock import ANY, call, patch
 
 from library import base16_builder
 

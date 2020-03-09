@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-ansible = ">=2.5.5"
+ansible = ">=2.7.16"
 pystache = ">=0.5.4"
+pyyaml = ">=5.3"
 
 [dev-packages]
 funcsigs = "*"
-mock = "*"
 nose2 = "*"
