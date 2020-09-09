@@ -402,12 +402,20 @@ class Scheme(object):
         for base in ["{:02X}".format(i) for i in range(16)]:
             base_key = "base{}".format(base)
             base_hex_key = "{}-hex".format(base_key)
+            base_hex_r = self._data()[base_key][0:2]
+            base_hex_g = self._data()[base_key][2:4]
+            base_hex_b = self._data()[base_key][4:6]
             self.base16_vars.update(
                 {
                     base_hex_key: self._data()[base_key],
-                    "{}-r".format(base_hex_key): self._data()[base_key][0:2],
-                    "{}-g".format(base_hex_key): self._data()[base_key][2:4],
-                    "{}-b".format(base_hex_key): self._data()[base_key][4:6],
+                    "{}-r".format(base_hex_key): base_hex_r,
+                    "{}-g".format(base_hex_key): base_hex_g,
+                    "{}-b".format(base_hex_key): base_hex_b,
+                    "{}-hex-bgr".format(base_key): "{}{}{}".format(
+                        base_hex_b,
+                        base_hex_g,
+                        base_hex_r,
+                    ),
                 }
             )
             self.base16_vars.update(

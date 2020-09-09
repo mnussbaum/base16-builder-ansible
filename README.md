@@ -17,6 +17,8 @@ them on the fly. This lets us use Base16 color schemes that older template
 repos might not have picked up yet, as well as ensuring that we're always using
 the latest version of existing color schemes.
 
+It currently implements vesion 0.9.1 of the Base16 spec.
+
 ## Example usages
 
 ```yaml
