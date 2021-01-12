@@ -3,7 +3,7 @@
 import os
 import subprocess
 
-for python_version in ("3.5", "3.6", "3.7", "3.8"):
+for python_version in ("3.5", "3.6", "3.7", "3.8", "3.9"):
     subprocess.check_call(
         [
             "docker",
