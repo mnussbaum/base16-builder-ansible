@@ -37,7 +37,7 @@ options:
     default: Build all schemes
   template:
     description:
-      - Set this to names of templates to only build those templates instead of building all, which is the default
+      - Set this to the name of a template or a list of template names to only build them instead of building all, which is the default
       - Only building a few templates is much faster then building all
     required: false
     type: list
