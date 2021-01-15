@@ -37,10 +37,10 @@ options:
     default: Build all schemes
   template:
     description:
-      - Set this to the name of a template to only build that one template instead of building all, which is the default
-      - Only building a single template is much faster then building all
+      - Set this to the name of a template or a list of template names to only build them instead of building all, which is the default
+      - Only building a few templates is much faster then building all
     required: false
-    type: string
+    type: list
     default: Build all templates
   cache_dir:
     description:
@@ -143,6 +143,14 @@ EXAMPLES = """
 # Build every color scheme for a single template
 - base16_builder:
     template: shell
+  register: base16_schemes
+
+# Build every color scheme for a few select templates
+- base16_builder:
+    template:
+      - shell
+      - i3
+      - qutebrowser
   register: base16_schemes
 
 # Build every color scheme for every template
@@ -560,7 +568,7 @@ class TemplateRepo(object):
         if module_template_arg is None:
             return True
 
-        return self.name == module_template_arg
+        return self.name in module_template_arg
 
 
 class Base16Builder(object):
@@ -612,7 +620,7 @@ class Base16Builder(object):
             if len(scheme_result) == 1 and self.module.params["template"]:
                 failure_msg = "Failed to build any templates."
                 if self.module.params["template"]:
-                    failure_msg = '{} Template name "{}" was passed, but didn\'t match any known templates'.format(
+                    failure_msg = '{} Template names {} were passed, but didn\'t match any known templates'.format(
                         failure_msg, self.module.params["template"]
                     )
 
@@ -644,7 +652,7 @@ def main():
             build=dict(type="bool", required=False, default=True),
             scheme=dict(type="str", required=False),
             scheme_family=dict(type="str", required=False),
-            template=dict(type="str", required=False),
+            template=dict(type="list", required=False),
             cache_dir=dict(type="str", required=False, default=default_cache_dir),
             schemes_source=dict(
                 type="str",

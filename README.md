@@ -95,6 +95,14 @@ tasks:
   - base16_builder: {}
     register: base16_schemes
 
+  # Build every color scheme for a few select templates
+  - base16_builder:
+      template:
+        - shell
+        - i3
+        - qutebrowser
+    register: base16_schemes
+
   # Download latest color scheme and template source files, but don't build anything
   - base16_builder:
       update: yes
@@ -143,10 +151,10 @@ scheme_family:
   default: Build all schemes
 template:
   description:
-    - Set this to the name of a template to only build that one template instead of building all, which is the default
-    - Only building a single template is much faster then building all
+    - Set this to the name of a template or a list of template names to only build them instead of building all, which is the default
+    - Only building a few templates is much faster then building all
   required: false
-  type: string
+  type: list
   default: Build all templates
 cache_dir:
   description:

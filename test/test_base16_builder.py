@@ -646,5 +646,5 @@ class TestBase16Builder(unittest.TestCase):
 
         self.assertEqual(
             result.exception.args[0]["msg"],
-            'Failed to build any templates. Template name "not-a-real-template" was passed, but didn\'t match any known templates',
+            'Failed to build any templates. Template names [\'not-a-real-template\'] were passed, but didn\'t match any known templates',
         )
