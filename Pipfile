@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 ansible = ">=2.7.16"
 pystache = ">=0.5.4"
-pyyaml = ">=5.3"
+pyyaml = ">=5.4"
 
 [dev-packages]
 funcsigs = "*"
