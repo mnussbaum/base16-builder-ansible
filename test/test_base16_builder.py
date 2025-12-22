@@ -7,7 +7,7 @@ import tempfile
 import unittest
 
 from ansible.module_utils import basic
-from ansible.module_utils._text import to_bytes
+from ansible.module_utils.common.text.converters import to_bytes
 
 
 from library import base16_builder
