@@ -383,6 +383,7 @@ class Scheme(object):
             "scheme-name": self._data()["scheme"],
             "scheme-slug": self.slug(),
             "scheme-slug-underscored": self.slug().replace("-", "_"),
+            "scheme-system": self._data().get("system", "base16"),
         }
         self.computed_bases = False
 
@@ -509,17 +510,23 @@ class Template(object):
         self.renderer = pystache.Renderer(search_dirs=os.path.dirname(self.path))
 
     def build(self, scheme):
-        # The base16 spec calls for the file to be written to
-        # os.path.join(
-        #     os.path.dirname(self.path),
-        #     self.config['output'],
-        #     'base16-{}.{}'.format(scheme.slug(), self.config['extension']),
-        # )
-        return {
-            "output_dir": self.config["output"],
-            "output_file_name": "base16-{}{}".format(
+        if "output" in self.config:
+            # Old spec: separate output dir and extension keys
+            output_dir = self.config["output"]
+            output_file_name = "base16-{}{}".format(
                 scheme.slug(), self.config["extension"]
-            ),
+            )
+        else:
+            # New tinted-theming spec: filename is a mustache template
+            rendered_filename = pystache.render(
+                self.config["filename"], scheme.base16_variables()
+            )
+            output_dir = os.path.dirname(rendered_filename)
+            output_file_name = os.path.basename(rendered_filename)
+
+        return {
+            "output_dir": output_dir,
+            "output_file_name": output_file_name,
             "output": self.renderer.render_path(self.path, scheme.base16_variables()),
         }
 
