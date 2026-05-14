@@ -610,6 +610,9 @@ class Base16Builder(object):
             scheme_result["scheme-variables"] = scheme.base16_variables()
 
             for template in self.templates_repo.sources():
+                supported_systems = template.config.get("supported-systems")
+                if supported_systems is not None and scheme.base16_vars["scheme-system"] not in supported_systems:
+                    continue
                 build_result = template.build(scheme)
                 if not scheme_result.get(template.family):
                     scheme_result[template.family] = {}
